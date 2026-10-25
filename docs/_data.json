@@ -1,0 +1,2098 @@
+{
+ "rubric": {
+  "version": 1,
+  "note": "Initial rubric from the expansion team",
+  "createdAt": "2026-10-25T00:00:00.000Z",
+  "blend": {
+   "partner": 50,
+   "location": 50
+  },
+  "partner": {
+   "floor": 15,
+   "size": 10,
+   "ownership": 5,
+   "financial": 25,
+   "operational": 25,
+   "speed": 10,
+   "local": 10
+  },
+  "location": {
+   "strategic": 25,
+   "demographic": 20,
+   "jtbd": 20,
+   "supply": 15,
+   "economics": 10,
+   "competition": 10
+  },
+  "approveMin": {
+   "Tier 1": 70,
+   "Tier 2": 66,
+   "Tier 3": 62
+  },
+  "conditionalMin": 55,
+  "rejectBelow": 45,
+  "capitalFloor": 0.5,
+  "saturationKm": 2
+ },
+ "brand": {
+  "sqft": {
+   "min": 200,
+   "idealMin": 250,
+   "idealMax": 600,
+   "max": 900
+  },
+  "capexLakh": {
+   "Tier 1": 35,
+   "Tier 2": 25,
+   "Tier 3": 20
+  },
+  "relevantWords": [
+   "optical",
+   "optician",
+   "eyewear",
+   "spectacle",
+   "optometr",
+   "lens",
+   "eye",
+   "sunglass"
+  ],
+  "adjacentWords": [
+   "footwear",
+   "shoe",
+   "apparel",
+   "garment",
+   "fashion",
+   "watch",
+   "jewel",
+   "mobile",
+   "electronic",
+   "pharmacy",
+   "medical",
+   "fmcg",
+   "cosmetic",
+   "retail",
+   "store",
+   "shop",
+   "showroom",
+   "outlet",
+   "franchise",
+   "business",
+   "trader",
+   "dealer"
+  ],
+  "footfall": "high",
+  "groundCritical": true,
+  "mallFit": "good",
+  "partnerOperates": true,
+  "needsExistingBusiness": false,
+  "leadMonths": {
+   "withSpace": 2,
+   "withoutSpace": 4
+  },
+  "staff": 4,
+  "licences": [
+   "Trade licence",
+   "GST registration",
+   "Shops & Establishments registration",
+   "Registered optometrist on staff"
+  ],
+  "training": [
+   {
+    "title": "Brand, product range and lens science",
+    "days": 2
+   },
+   {
+    "title": "Eye-test protocol and optometry SOPs",
+    "days": 4
+   },
+   {
+    "title": "Point of sale, inventory and lab orders",
+    "days": 2
+   },
+   {
+    "title": "Selling, frame styling and customer care",
+    "days": 2
+   },
+   {
+    "title": "Store opening drill at the buddy store",
+    "days": 3
+   }
+  ],
+  "revenueLakhPerMonth": {
+   "Tier 1": 9,
+   "Tier 2": 6.5,
+   "Tier 3": 5
+  },
+  "marginPct": 18,
+  "triggers": [
+   "hospital",
+   "clinic",
+   "college",
+   "office",
+   "market",
+   "main road",
+   "mall",
+   "metro",
+   "bus"
+  ],
+  "industry": "Eyewear & optical",
+  "model": "FOFO — Franchise-owned, franchise-operated. Partner invests and runs the store.",
+  "industryKey": "eyewear",
+  "modelKey": "fofo",
+  "summary": "Eyewear & optical, FOFO. Ideal space 250–600 sq ft; partner capital needed ₹35L / ₹25L / ₹20L (Tier 1/2/3)."
+ },
+ "metrics": [
+  {
+   "key": "financial",
+   "label": "Financial readiness",
+   "group": "partner",
+   "weight": 25,
+   "points": 12.5,
+   "what": "Can the partner fund the store? Investment is compared with the eyewear & optical setup cost for the city tier: ₹35L / ₹25L / ₹20L (Tier 1/2/3).",
+   "levels": [
+    [
+     "≥ 1.3× setup cost (has a working-capital buffer)",
+     "10"
+    ],
+    [
+     "1.0–1.3×",
+     "7–9"
+    ],
+    [
+     "0.75–1.0× — funding gap becomes a condition",
+     "4–6"
+    ],
+    [
+     "50%–75%",
+     "2–4"
+    ],
+    [
+     "Below 50% — rejected before scoring",
+     "0"
+    ],
+    [
+     "Relies on a loan (from the notes)",
+     "−1"
+    ]
+   ]
+  },
+  {
+   "key": "economics",
+   "label": "Real-estate economics",
+   "group": "location",
+   "weight": 10,
+   "points": 5,
+   "what": "Will the store make money after rent? Capital cover plus whether the space is owned.",
+   "levels": [
+    [
+     "Capital ≥ 1.3× setup",
+     "9"
+    ],
+    [
+     "≥ 1.0×",
+     "7"
+    ],
+    [
+     "≥ 0.75×",
+     "5"
+    ],
+    [
+     "Less",
+     "3"
+    ],
+    [
+     "Owned space (no rent)",
+     "+1"
+    ],
+    [
+     "Rented in a Tier 1 city",
+     "−0.5"
+    ]
+   ]
+  },
+  {
+   "key": "floor",
+   "label": "Floor & accessibility",
+   "group": "partner",
+   "weight": 15,
+   "points": 7.5,
+   "what": "Walk-in access. This format needs street-level visibility.",
+   "levels": [
+    [
+     "Ground floor",
+     "10"
+    ],
+    [
+     "Mall unit (good fit for this category)",
+     "8"
+    ],
+    [
+     "Upper floor / basement",
+     "2.5–3.5"
+    ],
+    [
+     "No space yet (floor decided later)",
+     "5"
+    ]
+   ]
+  },
+  {
+   "key": "size",
+   "label": "Space size & format fit",
+   "group": "partner",
+   "weight": 10,
+   "points": 5,
+   "what": "Does the space fit the store format? Ideal 250–600 sq ft; workable 200–900.",
+   "levels": [
+    [
+     "250–600 sq ft",
+     "10"
+    ],
+    [
+     "200–900 sq ft",
+     "7.5"
+    ],
+    [
+     "Up to 20% outside that",
+     "5"
+    ],
+    [
+     "Far too small or too big",
+     "2"
+    ],
+    [
+     "No space yet",
+     "5"
+    ]
+   ]
+  },
+  {
+   "key": "ownership",
+   "label": "Space ownership",
+   "group": "partner",
+   "weight": 5,
+   "points": 2.5,
+   "what": "Who controls the space, and for how long.",
+   "levels": [
+    [
+     "Owned",
+     "10"
+    ],
+    [
+     "Rented",
+     "7"
+    ],
+    [
+     "Short-term lease",
+     "4"
+    ],
+    [
+     "Not yet identified — caps the decision at Conditional",
+     "3"
+    ]
+   ]
+  },
+  {
+   "key": "operational",
+   "label": "Operating experience",
+   "group": "partner",
+   "weight": 25,
+   "points": 12.5,
+   "what": "Can they run a shop? Years of retail experience, boosted when their business is related to eyewear & optical.",
+   "levels": [
+    [
+     "0 years",
+     "2"
+    ],
+    [
+     "1 · 2 · 3 · 4 years",
+     "5 · 6 · 6.5 · 7"
+    ],
+    [
+     "5–9 years",
+     "8"
+    ],
+    [
+     "10+ years",
+     "8.5"
+    ],
+    [
+     "Same trade / adjacent retail",
+     "+1.5 / +1"
+    ],
+    [
+     "Owner not hands-on",
+     "−2"
+    ]
+   ]
+  },
+  {
+   "key": "local",
+   "label": "Local nuance & intent",
+   "group": "partner",
+   "weight": 10,
+   "points": 5,
+   "what": "Fit with local customers and staff, averaged with how serious the notes sound.",
+   "levels": [
+    [
+     "Kannada",
+     "10"
+    ],
+    [
+     "English (Tier 1 / other)",
+     "7.5 / 6"
+    ],
+    [
+     "Hindi (Tier 1 / other)",
+     "6 / 4"
+    ],
+    [
+     "Notes show research · generic · any-brand",
+     "10 · 6.5 · 3"
+    ]
+   ]
+  },
+  {
+   "key": "strategic",
+   "label": "Strategic fit & slots",
+   "group": "location",
+   "weight": 25,
+   "points": 12.5,
+   "what": "How much the brand wants this territory now, and how many slots are left.",
+   "levels": [
+    [
+     "High priority, 2+ slots / 1 slot",
+     "10 / 8.5"
+    ],
+    [
+     "Medium, 2+ / 1",
+     "7.5 / 6"
+    ],
+    [
+     "Low, 2+ / 1",
+     "4 / 3"
+    ],
+    [
+     "Outside the plan (fallback batch)",
+     "2"
+    ]
+   ]
+  },
+  {
+   "key": "demographic",
+   "label": "Demographic density",
+   "group": "location",
+   "weight": 20,
+   "points": 10,
+   "what": "Population and spending power, from the city tier and the type of locality.",
+   "levels": [
+    [
+     "Tier 1 · 2 · 3 base",
+     "8 · 6.5 · 5"
+    ],
+    [
+     "CBD / high street",
+     "+1.5"
+    ],
+    [
+     "Transit, IT corridor, premium residential",
+     "+1"
+    ],
+    [
+     "City fringe / industrial",
+     "−1.5 / −2"
+    ]
+   ]
+  },
+  {
+   "key": "jtbd",
+   "label": "Purchase triggers (JTBD)",
+   "group": "location",
+   "weight": 20,
+   "points": 10,
+   "what": "How strongly the spot triggers a purchase — busy streets, transit, malls.",
+   "levels": [
+    [
+     "Transit hub, CBD, high street",
+     "9"
+    ],
+    [
+     "Mall unit",
+     "8.5"
+    ],
+    [
+     "IT corridor · premium residential · residential",
+     "7.5 · 7 · 6"
+    ],
+    [
+     "Fringe · industrial",
+     "4 · 3.5"
+    ],
+    [
+     "Notes mention hospital, clinic, college…",
+     "+0.75 each"
+    ]
+   ]
+  },
+  {
+   "key": "supply",
+   "label": "Supply-chain reach",
+   "group": "location",
+   "weight": 15,
+   "points": 7.5,
+   "what": "How easily stock reaches the store from the existing network.",
+   "levels": [
+    [
+     "City already has stores (Bengaluru hub)",
+     "9–10"
+    ],
+    [
+     "Nearest store city ≤ 120 km",
+     "8"
+    ],
+    [
+     "≤ 250 km",
+     "6.5"
+    ],
+    [
+     "Farther",
+     "4.5"
+    ]
+   ]
+  },
+  {
+   "key": "competition",
+   "label": "Cannibalisation vs. white space",
+   "group": "location",
+   "weight": 10,
+   "points": 5,
+   "what": "Would it eat into an existing store, or open fresh ground?",
+   "levels": [
+    [
+     "Own store under 2 km away",
+     "2"
+    ],
+    [
+     "2–4 km",
+     "5"
+    ],
+    [
+     "4–7 km",
+     "8"
+    ],
+    [
+     "Farther, same city",
+     "9"
+    ],
+    [
+     "New city, High priority / other",
+     "9.5 / 7.5"
+    ]
+   ]
+  },
+  {
+   "key": "speed",
+   "label": "Speed to market",
+   "group": "partner",
+   "weight": 10,
+   "points": 5,
+   "what": "How soon they can open. Realistic lead time is ~2 months with a space, ~4 without.",
+   "levels": [
+    [
+     "≤ 3 months",
+     "10"
+    ],
+    [
+     "4–6",
+     "7"
+    ],
+    [
+     "7–9",
+     "4"
+    ],
+    [
+     "10+",
+     "3"
+    ],
+    [
+     "Faster than realistic (capped)",
+     "≤ 6"
+    ],
+    [
+     "Stated deadline",
+     "+0.5"
+    ]
+   ]
+  }
+ ],
+ "dims": [
+  {
+   "key": "money",
+   "label": "Money",
+   "points": 17.5,
+   "metrics": [
+    {
+     "key": "financial",
+     "label": "Financial readiness",
+     "group": "partner",
+     "weight": 25,
+     "points": 12.5,
+     "what": "Can the partner fund the store? Investment is compared with the eyewear & optical setup cost for the city tier: ₹35L / ₹25L / ₹20L (Tier 1/2/3).",
+     "levels": [
+      [
+       "≥ 1.3× setup cost (has a working-capital buffer)",
+       "10"
+      ],
+      [
+       "1.0–1.3×",
+       "7–9"
+      ],
+      [
+       "0.75–1.0× — funding gap becomes a condition",
+       "4–6"
+      ],
+      [
+       "50%–75%",
+       "2–4"
+      ],
+      [
+       "Below 50% — rejected before scoring",
+       "0"
+      ],
+      [
+       "Relies on a loan (from the notes)",
+       "−1"
+      ]
+     ]
+    },
+    {
+     "key": "economics",
+     "label": "Real-estate economics",
+     "group": "location",
+     "weight": 10,
+     "points": 5,
+     "what": "Will the store make money after rent? Capital cover plus whether the space is owned.",
+     "levels": [
+      [
+       "Capital ≥ 1.3× setup",
+       "9"
+      ],
+      [
+       "≥ 1.0×",
+       "7"
+      ],
+      [
+       "≥ 0.75×",
+       "5"
+      ],
+      [
+       "Less",
+       "3"
+      ],
+      [
+       "Owned space (no rent)",
+       "+1"
+      ],
+      [
+       "Rented in a Tier 1 city",
+       "−0.5"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "site",
+   "label": "Site readiness",
+   "points": 15,
+   "metrics": [
+    {
+     "key": "floor",
+     "label": "Floor & accessibility",
+     "group": "partner",
+     "weight": 15,
+     "points": 7.5,
+     "what": "Walk-in access. This format needs street-level visibility.",
+     "levels": [
+      [
+       "Ground floor",
+       "10"
+      ],
+      [
+       "Mall unit (good fit for this category)",
+       "8"
+      ],
+      [
+       "Upper floor / basement",
+       "2.5–3.5"
+      ],
+      [
+       "No space yet (floor decided later)",
+       "5"
+      ]
+     ]
+    },
+    {
+     "key": "size",
+     "label": "Space size & format fit",
+     "group": "partner",
+     "weight": 10,
+     "points": 5,
+     "what": "Does the space fit the store format? Ideal 250–600 sq ft; workable 200–900.",
+     "levels": [
+      [
+       "250–600 sq ft",
+       "10"
+      ],
+      [
+       "200–900 sq ft",
+       "7.5"
+      ],
+      [
+       "Up to 20% outside that",
+       "5"
+      ],
+      [
+       "Far too small or too big",
+       "2"
+      ],
+      [
+       "No space yet",
+       "5"
+      ]
+     ]
+    },
+    {
+     "key": "ownership",
+     "label": "Space ownership",
+     "group": "partner",
+     "weight": 5,
+     "points": 2.5,
+     "what": "Who controls the space, and for how long.",
+     "levels": [
+      [
+       "Owned",
+       "10"
+      ],
+      [
+       "Rented",
+       "7"
+      ],
+      [
+       "Short-term lease",
+       "4"
+      ],
+      [
+       "Not yet identified — caps the decision at Conditional",
+       "3"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "operator",
+   "label": "Operator",
+   "points": 17.5,
+   "metrics": [
+    {
+     "key": "operational",
+     "label": "Operating experience",
+     "group": "partner",
+     "weight": 25,
+     "points": 12.5,
+     "what": "Can they run a shop? Years of retail experience, boosted when their business is related to eyewear & optical.",
+     "levels": [
+      [
+       "0 years",
+       "2"
+      ],
+      [
+       "1 · 2 · 3 · 4 years",
+       "5 · 6 · 6.5 · 7"
+      ],
+      [
+       "5–9 years",
+       "8"
+      ],
+      [
+       "10+ years",
+       "8.5"
+      ],
+      [
+       "Same trade / adjacent retail",
+       "+1.5 / +1"
+      ],
+      [
+       "Owner not hands-on",
+       "−2"
+      ]
+     ]
+    },
+    {
+     "key": "local",
+     "label": "Local nuance & intent",
+     "group": "partner",
+     "weight": 10,
+     "points": 5,
+     "what": "Fit with local customers and staff, averaged with how serious the notes sound.",
+     "levels": [
+      [
+       "Kannada",
+       "10"
+      ],
+      [
+       "English (Tier 1 / other)",
+       "7.5 / 6"
+      ],
+      [
+       "Hindi (Tier 1 / other)",
+       "6 / 4"
+      ],
+      [
+       "Notes show research · generic · any-brand",
+       "10 · 6.5 · 3"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "location",
+   "label": "Location fit",
+   "points": 45,
+   "metrics": [
+    {
+     "key": "strategic",
+     "label": "Strategic fit & slots",
+     "group": "location",
+     "weight": 25,
+     "points": 12.5,
+     "what": "How much the brand wants this territory now, and how many slots are left.",
+     "levels": [
+      [
+       "High priority, 2+ slots / 1 slot",
+       "10 / 8.5"
+      ],
+      [
+       "Medium, 2+ / 1",
+       "7.5 / 6"
+      ],
+      [
+       "Low, 2+ / 1",
+       "4 / 3"
+      ],
+      [
+       "Outside the plan (fallback batch)",
+       "2"
+      ]
+     ]
+    },
+    {
+     "key": "demographic",
+     "label": "Demographic density",
+     "group": "location",
+     "weight": 20,
+     "points": 10,
+     "what": "Population and spending power, from the city tier and the type of locality.",
+     "levels": [
+      [
+       "Tier 1 · 2 · 3 base",
+       "8 · 6.5 · 5"
+      ],
+      [
+       "CBD / high street",
+       "+1.5"
+      ],
+      [
+       "Transit, IT corridor, premium residential",
+       "+1"
+      ],
+      [
+       "City fringe / industrial",
+       "−1.5 / −2"
+      ]
+     ]
+    },
+    {
+     "key": "jtbd",
+     "label": "Purchase triggers (JTBD)",
+     "group": "location",
+     "weight": 20,
+     "points": 10,
+     "what": "How strongly the spot triggers a purchase — busy streets, transit, malls.",
+     "levels": [
+      [
+       "Transit hub, CBD, high street",
+       "9"
+      ],
+      [
+       "Mall unit",
+       "8.5"
+      ],
+      [
+       "IT corridor · premium residential · residential",
+       "7.5 · 7 · 6"
+      ],
+      [
+       "Fringe · industrial",
+       "4 · 3.5"
+      ],
+      [
+       "Notes mention hospital, clinic, college…",
+       "+0.75 each"
+      ]
+     ]
+    },
+    {
+     "key": "supply",
+     "label": "Supply-chain reach",
+     "group": "location",
+     "weight": 15,
+     "points": 7.5,
+     "what": "How easily stock reaches the store from the existing network.",
+     "levels": [
+      [
+       "City already has stores (Bengaluru hub)",
+       "9–10"
+      ],
+      [
+       "Nearest store city ≤ 120 km",
+       "8"
+      ],
+      [
+       "≤ 250 km",
+       "6.5"
+      ],
+      [
+       "Farther",
+       "4.5"
+      ]
+     ]
+    },
+    {
+     "key": "competition",
+     "label": "Cannibalisation vs. white space",
+     "group": "location",
+     "weight": 10,
+     "points": 5,
+     "what": "Would it eat into an existing store, or open fresh ground?",
+     "levels": [
+      [
+       "Own store under 2 km away",
+       "2"
+      ],
+      [
+       "2–4 km",
+       "5"
+      ],
+      [
+       "4–7 km",
+       "8"
+      ],
+      [
+       "Farther, same city",
+       "9"
+      ],
+      [
+       "New city, High priority / other",
+       "9.5 / 7.5"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "key": "launch",
+   "label": "Launch realism",
+   "points": 5,
+   "metrics": [
+    {
+     "key": "speed",
+     "label": "Speed to market",
+     "group": "partner",
+     "weight": 10,
+     "points": 5,
+     "what": "How soon they can open. Realistic lead time is ~2 months with a space, ~4 without.",
+     "levels": [
+      [
+       "≤ 3 months",
+       "10"
+      ],
+      [
+       "4–6",
+       "7"
+      ],
+      [
+       "7–9",
+       "4"
+      ],
+      [
+       "10+",
+       "3"
+      ],
+      [
+       "Faster than realistic (capped)",
+       "≤ 6"
+      ],
+      [
+       "Stated deadline",
+       "+0.5"
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "blurb": {
+  "money": "Can they pay for it, and will it pay back?",
+  "site": "Is there a space that fits the format?",
+  "operator": "Can they run the store day to day?",
+  "location": "Is this a place the brand wants to be?",
+  "launch": "How soon can they realistically open?"
+ },
+ "gates": [
+  [
+   "Data checks",
+   "Blank amount, city/pin mismatch, notes that contradict the form → Hold for one answer."
+  ],
+  [
+   "Pin already has a store",
+   "Never two stores in one pin → Reject, with nearby open pins suggested."
+  ],
+  [
+   "Pin outside every territory",
+   "→ Hold on the waitlist (if any application in the batch is inside the plan)."
+  ],
+  [
+   "No usable slot",
+   "Territory has 0 open slots, or every pin is already served → Reject."
+  ],
+  [
+   "Capital too low",
+   "Under 50% of the tier setup cost → Reject."
+  ]
+ ],
+ "bands": [
+  [
+   "Approve",
+   "Wins a slot and scores ≥ the tier bar (T1 70 · T2 66 · T3 62), nothing left to close."
+  ],
+  [
+   "Conditional",
+   "Wins a slot (score ≥ 55) but has conditions — no space yet, funding gap, relocation. Slot held 60 days."
+  ],
+  [
+   "Hold",
+   "Score 45–55, waitlisted behind better partners, outside the plan, or missing data."
+  ],
+  [
+   "Reject",
+   "Score under 45, or failed a knockout above."
+  ]
+ ],
+ "industries": [
+  {
+   "label": "Eyewear & optical",
+   "capex": {
+    "Tier 1": 35,
+    "Tier 2": 25,
+    "Tier 3": 20
+   },
+   "sqft": {
+    "min": 200,
+    "idealMin": 250,
+    "idealMax": 600,
+    "max": 900
+   },
+   "footfall": "high",
+   "ground": true,
+   "staff": 4,
+   "lead": {
+    "withSpace": 2,
+    "withoutSpace": 4
+   },
+   "rev": {
+    "Tier 1": 9,
+    "Tier 2": 6.5,
+    "Tier 3": 5
+   },
+   "margin": 18
+  },
+  {
+   "label": "Food & QSR / café",
+   "capex": {
+    "Tier 1": 40,
+    "Tier 2": 32,
+    "Tier 3": 25
+   },
+   "sqft": {
+    "min": 200,
+    "idealMin": 300,
+    "idealMax": 600,
+    "max": 1200
+   },
+   "footfall": "high",
+   "ground": true,
+   "staff": 8,
+   "lead": {
+    "withSpace": 2,
+    "withoutSpace": 4
+   },
+   "rev": {
+    "Tier 1": 12,
+    "Tier 2": 9,
+    "Tier 3": 6.5
+   },
+   "margin": 15
+  },
+  {
+   "label": "Apparel & footwear",
+   "capex": {
+    "Tier 1": 45,
+    "Tier 2": 35,
+    "Tier 3": 28
+   },
+   "sqft": {
+    "min": 500,
+    "idealMin": 800,
+    "idealMax": 1200,
+    "max": 2000
+   },
+   "footfall": "high",
+   "ground": true,
+   "staff": 5,
+   "lead": {
+    "withSpace": 2,
+    "withoutSpace": 4
+   },
+   "rev": {
+    "Tier 1": 10,
+    "Tier 2": 7,
+    "Tier 3": 5.5
+   },
+   "margin": 20
+  },
+  {
+   "label": "Grocery & convenience",
+   "capex": {
+    "Tier 1": 30,
+    "Tier 2": 24,
+    "Tier 3": 18
+   },
+   "sqft": {
+    "min": 400,
+    "idealMin": 600,
+    "idealMax": 1000,
+    "max": 1500
+   },
+   "footfall": "medium",
+   "ground": true,
+   "staff": 6,
+   "lead": {
+    "withSpace": 2,
+    "withoutSpace": 3
+   },
+   "rev": {
+    "Tier 1": 15,
+    "Tier 2": 11,
+    "Tier 3": 8
+   },
+   "margin": 8
+  },
+  {
+   "label": "Pharmacy & health",
+   "capex": {
+    "Tier 1": 20,
+    "Tier 2": 16,
+    "Tier 3": 12
+   },
+   "sqft": {
+    "min": 150,
+    "idealMin": 250,
+    "idealMax": 500,
+    "max": 800
+   },
+   "footfall": "medium",
+   "ground": true,
+   "staff": 3,
+   "lead": {
+    "withSpace": 2,
+    "withoutSpace": 3
+   },
+   "rev": {
+    "Tier 1": 8,
+    "Tier 2": 6,
+    "Tier 3": 4.5
+   },
+   "margin": 12
+  },
+  {
+   "label": "Beauty & wellness",
+   "capex": {
+    "Tier 1": 30,
+    "Tier 2": 24,
+    "Tier 3": 18
+   },
+   "sqft": {
+    "min": 400,
+    "idealMin": 600,
+    "idealMax": 900,
+    "max": 1400
+   },
+   "footfall": "medium",
+   "ground": false,
+   "staff": 6,
+   "lead": {
+    "withSpace": 2,
+    "withoutSpace": 4
+   },
+   "rev": {
+    "Tier 1": 7,
+    "Tier 2": 5,
+    "Tier 3": 3.5
+   },
+   "margin": 22
+  },
+  {
+   "label": "Mobiles & electronics",
+   "capex": {
+    "Tier 1": 40,
+    "Tier 2": 32,
+    "Tier 3": 25
+   },
+   "sqft": {
+    "min": 300,
+    "idealMin": 400,
+    "idealMax": 700,
+    "max": 1200
+   },
+   "footfall": "high",
+   "ground": true,
+   "staff": 4,
+   "lead": {
+    "withSpace": 2,
+    "withoutSpace": 3
+   },
+   "rev": {
+    "Tier 1": 18,
+    "Tier 2": 12,
+    "Tier 3": 9
+   },
+   "margin": 7
+  },
+  {
+   "label": "Logistics & last-mile",
+   "capex": {
+    "Tier 1": 15,
+    "Tier 2": 12,
+    "Tier 3": 10
+   },
+   "sqft": {
+    "min": 800,
+    "idealMin": 1200,
+    "idealMax": 2500,
+    "max": 4000
+   },
+   "footfall": "low",
+   "ground": true,
+   "staff": 10,
+   "lead": {
+    "withSpace": 1,
+    "withoutSpace": 3
+   },
+   "rev": {
+    "Tier 1": 6,
+    "Tier 2": 4.5,
+    "Tier 3": 3.5
+   },
+   "margin": 20
+  },
+  {
+   "label": "Education & learning",
+   "capex": {
+    "Tier 1": 25,
+    "Tier 2": 20,
+    "Tier 3": 15
+   },
+   "sqft": {
+    "min": 600,
+    "idealMin": 900,
+    "idealMax": 1500,
+    "max": 2500
+   },
+   "footfall": "medium",
+   "ground": false,
+   "staff": 6,
+   "lead": {
+    "withSpace": 2,
+    "withoutSpace": 4
+   },
+   "rev": {
+    "Tier 1": 6,
+    "Tier 2": 4.5,
+    "Tier 3": 3
+   },
+   "margin": 25
+  }
+ ],
+ "models": [
+  {
+   "key": "fofo",
+   "label": "FOFO",
+   "hint": "Franchise-owned, franchise-operated. Partner invests and runs the store."
+  },
+  {
+   "key": "foco",
+   "label": "FOCO",
+   "hint": "Franchise-owned, company-operated. Partner invests; the brand runs the store."
+  },
+  {
+   "key": "sis",
+   "label": "Shop-in-shop / kiosk",
+   "hint": "Small brand corner inside the partner's existing shop."
+  },
+  {
+   "key": "micro",
+   "label": "Micro-partner",
+   "hint": "Partner lends space and time (Amazon I Have Space style). Very low capex."
+  }
+ ],
+ "summary": {
+  "total": 28,
+  "counts": {
+   "Approve": 6,
+   "Conditional": 5,
+   "Hold": 12,
+   "Reject": 5
+  },
+  "slotsOpen": 12,
+  "slotsFilled": 11,
+  "gateScenario": "A",
+  "dataIssues": 8,
+  "contestedPins": 3
+ },
+ "territories": [
+  {
+   "id": "TER-01",
+   "city": "Bengaluru",
+   "pins": [
+    "560034",
+    "560095",
+    "560102",
+    "560068"
+   ],
+   "cap": 2,
+   "slots": 2,
+   "prio": "High",
+   "alloc": [
+    "APP-002",
+    "APP-003"
+   ],
+   "wait": [
+    "APP-018"
+   ],
+   "note": "Over-subscribed 2× — 1 qualified partner waitlisted. Consider adding slots."
+  },
+  {
+   "id": "TER-02",
+   "city": "Bengaluru",
+   "pins": [
+    "560011",
+    "560041",
+    "560070",
+    "560078"
+   ],
+   "cap": 1,
+   "slots": 1,
+   "prio": "Medium",
+   "alloc": [
+    "APP-010"
+   ],
+   "wait": [
+    "APP-009"
+   ],
+   "note": "Over-subscribed 2× — 1 qualified partner waitlisted. Consider adding slots."
+  },
+  {
+   "id": "TER-03",
+   "city": "Mysuru",
+   "pins": [
+    "570001",
+    "570002",
+    "570008",
+    "570009"
+   ],
+   "cap": 2,
+   "slots": 2,
+   "prio": "High",
+   "alloc": [
+    "APP-026",
+    "APP-001"
+   ],
+   "wait": [
+    "APP-005"
+   ],
+   "note": "Over-subscribed 2.5× — 1 qualified partner waitlisted. Consider adding slots."
+  },
+  {
+   "id": "TER-04",
+   "city": "Mangaluru",
+   "pins": [
+    "575001",
+    "575002",
+    "575003"
+   ],
+   "cap": 1,
+   "slots": 1,
+   "prio": "Medium",
+   "alloc": [
+    "APP-014"
+   ],
+   "wait": [
+    "APP-023"
+   ],
+   "note": "Over-subscribed 3× — 1 qualified partner waitlisted. Consider adding slots."
+  },
+  {
+   "id": "TER-05",
+   "city": "Hubballi-Dharwad",
+   "pins": [
+    "580020",
+    "580021",
+    "580029",
+    "580001"
+   ],
+   "cap": 1,
+   "slots": 1,
+   "prio": "Low",
+   "alloc": [
+    "APP-020"
+   ],
+   "wait": [],
+   "note": "Filled."
+  },
+  {
+   "id": "TER-06",
+   "city": "Tumakuru",
+   "pins": [
+    "572101",
+    "572102",
+    "572103"
+   ],
+   "cap": 2,
+   "slots": 2,
+   "prio": "High",
+   "alloc": [
+    "APP-019",
+    "APP-007"
+   ],
+   "wait": [
+    "ROW-018"
+   ],
+   "note": "Over-subscribed 1.5× — 1 qualified partner waitlisted. Consider adding slots."
+  },
+  {
+   "id": "TER-07",
+   "city": "Davanagere",
+   "pins": [
+    "577001",
+    "577002",
+    "577004"
+   ],
+   "cap": 3,
+   "slots": 3,
+   "prio": "High",
+   "alloc": [
+    "APP-016",
+    "APP-012"
+   ],
+   "wait": [],
+   "note": "1 slot still open: 3 applied but not all qualified."
+  },
+  {
+   "id": "TER-08",
+   "city": "Belagavi",
+   "pins": [
+    "590001"
+   ],
+   "cap": 0,
+   "slots": 2,
+   "prio": "Low",
+   "alloc": [],
+   "wait": [],
+   "note": "No capacity: every listed pin already has a store. 2 applicants asked for nearby pins 590006, 590010 — consider adding them."
+  }
+ ],
+ "all": [
+  [
+   "APP-001",
+   "Ravi Kumar",
+   "Conditional",
+   78.4,
+   "Holds slot 2 of 2 in TER-03 (score 78.4) if 1 condition is met. It lost pin 570001 to APP-026, but still outranks the rest of TER-03, so it is offered free pin 570008 instead."
+  ],
+  [
+   "APP-002",
+   "Priya Shetty",
+   "Approve",
+   92.3,
+   "Wins slot 1 of 2 in TER-01; score 92.3 clears the Tier 1 bar of 70."
+  ],
+  [
+   "APP-003",
+   "Arjun Rao",
+   "Conditional",
+   84.7,
+   "Holds slot 2 of 2 in TER-01 (score 84.7) if 1 condition is met. It lost pin 560102 to APP-002, but still outranks the rest of TER-01, so it is offered free pin 560068 instead."
+  ],
+  [
+   "APP-004",
+   "Meena Gowda",
+   "Reject",
+   83.4,
+   "Pin 570009 already has store ST-06 (opened 2021). The brand never opens two stores in one pin code."
+  ],
+  [
+   "APP-005",
+   "Imran Khan",
+   "Hold",
+   68.1,
+   "Waitlisted #1 for TER-03: its 2 slots went to higher scores (APP-026 92.3, APP-001 78.4); this application scored 68.1."
+  ],
+  [
+   "APP-006",
+   "Suresh Patil",
+   "Hold",
+   51.8,
+   "Borderline: score 51.8 is in the review band (45–55); the Tier bar is 66."
+  ],
+  [
+   "APP-007",
+   "Lakshmi N",
+   "Conditional",
+   86.7,
+   "Holds slot 2 of 2 in TER-06 (score 86.7) if 1 condition is met. It lost pin 572101 to APP-019, but still outranks the rest of TER-06, so it is offered free pin 572102 instead."
+  ],
+  [
+   "APP-008",
+   "Deepak Hegde",
+   "Reject",
+   60.6,
+   "Severely undercapitalised: ₹12L is 48% of the ₹25L needed (below 50%)."
+  ],
+  [
+   "APP-009",
+   "Farhan Ali",
+   "Hold",
+   76.9,
+   "Waitlisted #1 for TER-02: its 1 slot went to higher scores (APP-010 85.9); this application scored 76.9."
+  ],
+  [
+   "APP-010",
+   "Kavya Reddy",
+   "Approve",
+   85.9,
+   "Wins slot 1 of 1 in TER-02; score 85.9 clears the Tier 1 bar of 70."
+  ],
+  [
+   "APP-011",
+   "Ganesh Bhat",
+   "Hold",
+   74.7,
+   "Needs information: City says Mysuru, but pin 560038 is in Bengaluru. Which one is the store meant for? If the pin is right, it is already served by ST-03."
+  ],
+  [
+   "APP-012",
+   "Anil Kulkarni",
+   "Conditional",
+   67.1,
+   "Holds slot 2 of 3 in TER-07 (score 67.1) if 3 conditions are met. Score 67.1 would be Approve, but no space is identified yet, so Conditional — slot reserved for 60 days."
+  ],
+  [
+   "APP-013",
+   "Rohit Sharma",
+   "Reject",
+   72.8,
+   "Pin 590001 already has store ST-10 (opened 2024). The brand never opens two stores in one pin code."
+  ],
+  [
+   "APP-014",
+   "Sneha Pai",
+   "Conditional",
+   75.4,
+   "Holds slot 1 of 1 in TER-04 (score 75.4) if 1 condition is met."
+  ],
+  [
+   "APP-015",
+   "Vikram Joshi",
+   "Reject",
+   74.9,
+   "Pin 560066 already has store ST-04 (opened 2022). The brand never opens two stores in one pin code."
+  ],
+  [
+   "APP-016",
+   "Nandini Murthy",
+   "Approve",
+   90.3,
+   "Wins slot 1 of 3 in TER-07; score 90.3 clears the Tier 3 bar of 62."
+  ],
+  [
+   "ROW-018",
+   "Harish M",
+   "Hold",
+   72.1,
+   "Waitlisted #1 for TER-06: its 2 slots went to higher scores (APP-019 94.6, APP-007 86.7); this application scored 72.1."
+  ],
+  [
+   "APP-018",
+   "Pooja Iyer",
+   "Hold",
+   77.1,
+   "Waitlisted #1 for TER-01: its 2 slots went to higher scores (APP-002 92.3, APP-003 84.7); this application scored 77.1."
+  ],
+  [
+   "APP-019",
+   "Mahesh Gowda",
+   "Approve",
+   94.6,
+   "Wins slot 1 of 2 in TER-06; score 94.6 clears the Tier 3 bar of 62."
+  ],
+  [
+   "APP-020",
+   "Arif Pasha",
+   "Approve",
+   71.9,
+   "Wins slot 1 of 1 in TER-05; score 71.9 clears the Tier 2 bar of 66."
+  ],
+  [
+   "APP-021",
+   "Sunita Desai",
+   "Hold",
+   72.9,
+   "Outside the expansion area: pin 590006 is in no territory, while 24 other applications are (Phase 1 check). Kept on the waitlist — it goes forward if the team adds this pin."
+  ],
+  [
+   "APP-022",
+   "Ramesh Naik",
+   "Hold",
+   66.9,
+   "Outside the expansion area: pin 590010 is in no territory, while 24 other applications are (Phase 1 check). Kept on the waitlist — it goes forward if the team adds this pin."
+  ],
+  [
+   "APP-023",
+   "Divya Kamath",
+   "Hold",
+   62.3,
+   "Waitlisted #1 for TER-04: its 1 slot went to higher scores (APP-014 75.4); this application scored 62.3."
+  ],
+  [
+   "APP-024",
+   "Prakash B",
+   "Hold",
+   76.5,
+   "Needs information: Investment amount missing."
+  ],
+  [
+   "APP-025",
+   "Shalini Rao",
+   "Hold",
+   69.3,
+   "Verify before deciding: possible legal or ownership dispute."
+  ],
+  [
+   "APP-026",
+   "Kiran Kumar",
+   "Approve",
+   92.3,
+   "Wins slot 1 of 2 in TER-03; score 92.3 clears the Tier 2 bar of 66."
+  ],
+  [
+   "APP-027",
+   "Priya Shetty",
+   "Hold",
+   91.4,
+   "Duplicate of APP-002 (same applicant and pin) — merge the two before deciding."
+  ],
+  [
+   "APP-028",
+   "Uday Shetty",
+   "Reject",
+   74.9,
+   "Pin 580020 already has store ST-09 (opened 2023). The brand never opens two stores in one pin code."
+  ]
+ ],
+ "before": {
+  "id": "APP-012",
+  "name": "Anil Kulkarni",
+  "decision": "Conditional",
+  "score": 67.1,
+  "P": 61.3,
+  "L": 72.9,
+  "headline": "Holds slot 2 of 3 in TER-07 (score 67.1) if 3 conditions are met. Score 67.1 would be Approve, but no space is identified yet, so Conditional — slot reserved for 60 days.",
+  "conditions": [
+   "Secure a ground-floor 250–600 sq ft space in pin 577002 within 60 days (slot reserved meanwhile); the brand's site team audits it.",
+   "Close a funding gap of ₹2L (sanction letter or co-investor) before signing.",
+   "Reset the launch to month 4; 2 months are too fast without a space in hand."
+  ],
+  "dims": [
+   [
+    "Money",
+    51
+   ],
+   [
+    "Site readiness",
+    47
+   ],
+   [
+    "Operator",
+    81
+   ],
+   [
+    "Location fit",
+    75
+   ],
+   [
+    "Launch realism",
+    60
+   ]
+  ],
+  "factors": [
+   [
+    "Floor & accessibility",
+    15,
+    5,
+    "No space yet — the brand will require a ground-floor site."
+   ],
+   [
+    "Space size & format fit",
+    10,
+    5,
+    "No space yet — to be sourced at the 250–600 sq ft prototype."
+   ],
+   [
+    "Space ownership",
+    5,
+    3,
+    "No space secured yet."
+   ],
+   [
+    "Financial readiness",
+    25,
+    5.2,
+    "₹18L vs Tier 3 minimum ₹20L (0.90×) · batch median ₹30L."
+   ],
+   [
+    "Operating experience",
+    25,
+    8,
+    "2 years running a shop; directly relevant (Ex-sales manager at an eyewear chain)."
+   ],
+   [
+    "Speed to market",
+    10,
+    6,
+    "Wants to open in 2 months — faster than the ~4 months needed without a space."
+   ],
+   [
+    "Local nuance & intent",
+    10,
+    8.3,
+    "Kannada matches local customers and staff; notes show generic intent."
+   ],
+   [
+    "Strategic fit & slots",
+    25,
+    10,
+    "TER-07 (Davanagere) is High priority with 3 open slots."
+   ],
+   [
+    "Demographic density",
+    20,
+    5,
+    "Tier 3 city; Davanagere · 577002 — not mapped."
+   ],
+   [
+    "Purchase triggers (JTBD)",
+    20,
+    6.8,
+    "Purchase-trigger strength: not mapped; near market."
+   ],
+   [
+    "Supply-chain reach",
+    15,
+    6.5,
+    "No store in Davanagere yet; nearest is Hubballi-Dharwad (ST-09) ~171 km by road — needs a modified delivery schedule."
+   ],
+   [
+    "Real-estate economics",
+    10,
+    5,
+    "Capital covers 90% of setup; rent not yet known."
+   ],
+   [
+    "Cannibalisation vs. white space",
+    10,
+    9.5,
+    "White space — no own store in Davanagere yet, and it is a High-priority territory."
+   ]
+  ],
+  "paths": [
+   {
+    "label": "All of: secures a ground-floor 425 sq ft space (rented); raises capital to ₹26L",
+    "becomes": "Approve",
+    "score": 84.4
+   }
+  ],
+  "ter": "TER-07",
+  "tier": "Tier 3"
+ },
+ "after": {
+  "id": "APP-012",
+  "name": "Anil Kulkarni",
+  "decision": "Conditional",
+  "score": 76.4,
+  "P": 79.8,
+  "L": 72.9,
+  "headline": "Holds slot 2 of 3 in TER-07 (score 76.4) if 1 condition is met.",
+  "conditions": [
+   "Close a funding gap of ₹2L (sanction letter or co-investor) before signing."
+  ],
+  "dims": [
+   [
+    "Money",
+    51
+   ],
+   [
+    "Site readiness",
+    95
+   ],
+   [
+    "Operator",
+    81
+   ],
+   [
+    "Location fit",
+    75
+   ],
+   [
+    "Launch realism",
+    100
+   ]
+  ],
+  "factors": [
+   [
+    "Floor & accessibility",
+    15,
+    10,
+    "Ground floor — easiest walk-in access."
+   ],
+   [
+    "Space size & format fit",
+    10,
+    10,
+    "450 sq ft sits inside the 250–600 sq ft prototype."
+   ],
+   [
+    "Space ownership",
+    5,
+    7,
+    "Rented — standard, but adds fixed rent."
+   ],
+   [
+    "Financial readiness",
+    25,
+    5.2,
+    "₹18L vs Tier 3 minimum ₹20L (0.90×) · batch median ₹30L."
+   ],
+   [
+    "Operating experience",
+    25,
+    8,
+    "2 years running a shop; directly relevant (Ex-sales manager at an eyewear chain)."
+   ],
+   [
+    "Speed to market",
+    10,
+    10,
+    "Wants to open in 2 months."
+   ],
+   [
+    "Local nuance & intent",
+    10,
+    8.3,
+    "Kannada matches local customers and staff; notes show generic intent."
+   ],
+   [
+    "Strategic fit & slots",
+    25,
+    10,
+    "TER-07 (Davanagere) is High priority with 3 open slots."
+   ],
+   [
+    "Demographic density",
+    20,
+    5,
+    "Tier 3 city; Davanagere · 577002 — not mapped."
+   ],
+   [
+    "Purchase triggers (JTBD)",
+    20,
+    6.8,
+    "Purchase-trigger strength: not mapped; near market."
+   ],
+   [
+    "Supply-chain reach",
+    15,
+    6.5,
+    "No store in Davanagere yet; nearest is Hubballi-Dharwad (ST-09) ~171 km by road — needs a modified delivery schedule."
+   ],
+   [
+    "Real-estate economics",
+    10,
+    5,
+    "Capital covers 90% of setup."
+   ],
+   [
+    "Cannibalisation vs. white space",
+    10,
+    9.5,
+    "White space — no own store in Davanagere yet, and it is a High-priority territory."
+   ]
+  ],
+  "paths": [
+   {
+    "label": "Raises capital to ₹26L",
+    "becomes": "Approve",
+    "score": 84.4
+   }
+  ],
+  "ter": "TER-07",
+  "tier": "Tier 3"
+ },
+ "reloc": {
+  "id": "APP-001",
+  "name": "Ravi Kumar",
+  "decision": "Conditional",
+  "score": 78.4,
+  "P": 84.3,
+  "L": 72.5,
+  "headline": "Holds slot 2 of 2 in TER-03 (score 78.4) if 1 condition is met. It lost pin 570001 to APP-026, but still outranks the rest of TER-03, so it is offered free pin 570008 instead.",
+  "conditions": [
+   "Relocate from pin 570001 (taken by a higher score) to free pin 570008 — Mysuru · 570008; site team to confirm a space there. Note: APP-024 also asked for 570008 but does not qualify yet — if that changes, the decision re-runs."
+  ],
+  "dims": [
+   [
+    "Money",
+    70
+   ],
+   [
+    "Site readiness",
+    95
+   ],
+   [
+    "Operator",
+    81
+   ],
+   [
+    "Location fit",
+    73
+   ],
+   [
+    "Launch realism",
+    100
+   ]
+  ],
+  "factors": [
+   [
+    "Floor & accessibility",
+    15,
+    10,
+    "Ground floor — easiest walk-in access."
+   ],
+   [
+    "Space size & format fit",
+    10,
+    10,
+    "450 sq ft sits inside the 250–600 sq ft prototype."
+   ],
+   [
+    "Space ownership",
+    5,
+    7,
+    "Rented — standard, but adds fixed rent."
+   ],
+   [
+    "Financial readiness",
+    25,
+    7,
+    "₹25L vs Tier 2 minimum ₹25L (1.00×) · batch median ₹30L — covers setup, thin buffer."
+   ],
+   [
+    "Operating experience",
+    25,
+    8,
+    "4 years running a shop; adjacent retail (Runs a footwear store)."
+   ],
+   [
+    "Speed to market",
+    10,
+    10,
+    "Wants to open in 3 months; deadline: before diwali."
+   ],
+   [
+    "Local nuance & intent",
+    10,
+    8.3,
+    "Kannada matches local customers and staff; notes show generic intent."
+   ],
+   [
+    "Strategic fit & slots",
+    25,
+    10,
+    "TER-03 (Mysuru) is High priority with 2 open slots."
+   ],
+   [
+    "Demographic density",
+    20,
+    6.5,
+    "Tier 2 city; Mysuru · 570008 — not mapped."
+   ],
+   [
+    "Purchase triggers (JTBD)",
+    20,
+    6,
+    "Purchase-trigger strength: not mapped."
+   ],
+   [
+    "Supply-chain reach",
+    15,
+    9,
+    "Mysuru already has 2 stores — existing replenishment route."
+   ],
+   [
+    "Real-estate economics",
+    10,
+    7,
+    "Capital covers 100% of setup."
+   ],
+   [
+    "Cannibalisation vs. white space",
+    10,
+    2,
+    "Nearest own store ST-06 is ~1.9 km away — catchments overlap (cannibalisation)."
+   ]
+  ],
+  "paths": [],
+  "ter": "TER-03",
+  "tier": "Tier 2"
+ },
+ "withdraw": [
+  [
+   "APP-007",
+   "Conditional",
+   "Approve",
+   "Wins slot 1 of 2 in TER-06; score 91.2 clears the Tier 3 bar of 62."
+  ],
+  [
+   "ROW-018",
+   "Hold",
+   "Conditional",
+   "Holds slot 2 of 2 in TER-06 (score 72.1) if 1 condition is met."
+  ],
+  [
+   "APP-019",
+   "Approve",
+   "Reject",
+   "Withdrawn by the applicant."
+  ]
+ ],
+ "plan": [
+  [
+   "Set up",
+   "2026-10-30",
+   "Offer letter and LOI in Kannada",
+   "Brand"
+  ],
+  [
+   "Set up",
+   "2026-11-04",
+   "KYC and proof of funds",
+   "Partner"
+  ],
+  [
+   "Set up",
+   "2026-11-08",
+   "Site audit and layout sign-off",
+   "Brand"
+  ],
+  [
+   "Set up",
+   "2026-11-15",
+   "Franchise agreement signed, fee paid",
+   "Both"
+  ],
+  [
+   "Set up",
+   "2026-11-18",
+   "Fit-out starts (5 weeks)",
+   "Brand"
+  ],
+  [
+   "Train",
+   "2026-12-02",
+   "Hire 4 staff",
+   "Partner"
+  ],
+  [
+   "Set up",
+   "2026-12-06",
+   "Licences in hand",
+   "Partner"
+  ],
+  [
+   "Train",
+   "2026-12-07",
+   "Owner training at ST-09 (Hubballi-Dharwad, ~130 km) — 13 days in Kannada",
+   "Both"
+  ],
+  [
+   "Train",
+   "2026-12-18",
+   "Staff training in Kannada",
+   "Brand"
+  ],
+  [
+   "Open",
+   "2026-12-19",
+   "Stock, point of sale and systems go live",
+   "Brand"
+  ],
+  [
+   "Open",
+   "2026-12-25",
+   "Soft launch",
+   "Both"
+  ],
+  [
+   "Open",
+   "2027-01-24",
+   "Grand opening",
+   "Both"
+  ],
+  [
+   "Open",
+   "2027-02-23",
+   "30-day review and \"ready to run alone\" sign-off",
+   "Brand"
+  ],
+  [
+   "Open",
+   "2027-04-24",
+   "90-day review",
+   "Brand"
+  ]
+ ],
+ "planNote": "Fits the partner's 3-month target. Indicative payback ≈ 22 months (₹20L setup, ~₹0.9L/month operating profit).",
+ "planFor": "APP-016"
+}

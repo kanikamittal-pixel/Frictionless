@@ -53,7 +53,7 @@ export default function Chat({ open, aiOn, toast }: { open: boolean; aiOn: boole
       const history = useStore.getState().chat.slice(-7, -1).map((c) => ({ role: c.role, text: c.text }));
       reply = await aiChat(m, history, chatContext(input, out, m));
     } catch {
-      reply = rulesChat(m, out);
+      reply = rulesChat(m, out, input.brand);
       source = "rules";
     }
     const msgOut: ChatMsg = { id: uid(), role: "assistant", text: reply.answer || "Done.", at: new Date().toISOString(), source };

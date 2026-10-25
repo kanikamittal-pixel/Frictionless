@@ -70,7 +70,19 @@ export interface TextTags {
   contradictions: string[]; // notes vs structured fields
   fills?: Fills; // values stated in the free text for cells left blank
   competitors?: { level: CompLevel; phrase: string }; // only when the text talks about competitors
+  signals?: AiSignals; // the AI's reading of the facts the engine decides on; absent for the rule reader
   source: "ai" | "rules";
+}
+
+/** Facts in the free text that change a decision. Each is optional: unset means "use the rules". */
+export interface AiSignals {
+  withdrawn?: boolean;
+  someoneElseRuns?: boolean; // a relative or other person will run the store, not the applicant
+  loanDependent?: boolean; // part of the money is a loan not yet sanctioned
+  otherFranchise?: boolean; // runs or holds another franchise now
+  nearOwnStore?: "direct" | "near" | "none"; // what the text says about distance to the brand's own stores
+  nearPhrase?: string;
+  wantedCity?: string; // a different allowed city they say they actually want
 }
 
 /** How crowded the pin is with the brand's own category, relative to what is normal for it. */

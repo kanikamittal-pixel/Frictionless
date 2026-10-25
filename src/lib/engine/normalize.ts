@@ -24,12 +24,20 @@ export function text(v: unknown): string {
 
 /** "  ravi   KUMAR " -> "Ravi Kumar"; placeholder names become blank. */
 export function personName(v: unknown): string {
-  const t = text(v).replace(/^(mr|mrs|ms|dr|shri|smt)\.?\s+/i, (m) => m.charAt(0).toUpperCase() + m.slice(1).toLowerCase());
+  const t = text(String(v ?? "").replace(/<[^>]*>/g, " ")).replace(/^(mr|mrs|ms|dr|shri|smt)\.?\s+/i, (m) => m.charAt(0).toUpperCase() + m.slice(1).toLowerCase());
   if (!t || /^(test|name|applicant|unknown|abc|xyz|asdf)$/i.test(t)) return "";
-  const allCaps = t === t.toUpperCase();
-  const allLower = t === t.toLowerCase();
-  if (!allCaps && !allLower) return t;
-  return t.toLowerCase().replace(/(^|[\s.'-])([a-z])/g, (_, p, c) => p + c.toUpperCase());
+  // Word by word, so "Mrs. LATHA r" and "rajesh SHETTY" tidy up while "D'Souza" and "McKenzie" stay as typed.
+  const fix = (w: string) => w.toLowerCase().replace(/(^|[.'-])([a-z])/g, (_, p, c) => p + c.toUpperCase());
+  // Words inside brackets ("(applying for husband Suresh)") are a note, not the name: left as typed.
+  let depth = 0;
+  return t
+    .split(" ")
+    .map((w) => {
+      const inside = depth > 0 || w.startsWith("(");
+      depth += (w.match(/\(/g) ?? []).length - (w.match(/\)/g) ?? []).length;
+      return !inside && /[a-z]/i.test(w) && (w === w.toUpperCase() || w === w.toLowerCase()) ? fix(w) : w;
+    })
+    .join(" ");
 }
 
 /** "app 7", "App-007 ", "APP_07" -> "APP-007"; "ter1" -> "TER-01". Shared by the sheet and the chat. */
@@ -54,7 +62,9 @@ export function investment(v: unknown, field = "investment"): Norm<number> {
   const s = raw.toLowerCase();
   const n = typeof v === "number" ? v : firstNumber(s);
   if (n === null) return { value: null, issue: { severity: "block", field, code: "bad-investment", message: `Investment "${raw}" is not an amount.` } };
-  if (n <= 0) return { value: null, issue: { severity: "block", field, code: "zero-investment", message: `Investment is ${n} — amount missing.` } };
+  // A typed 0 is an answer (no funds), not a blank.
+  if (n === 0) return { value: 0, issue: { severity: "warn", field, code: "zero-investment", message: "Investment is 0 — no funds stated." } };
+  if (n < 0) return { value: null, issue: { severity: "block", field, code: "neg-investment", message: `Investment is ${n} — amount missing.` } };
   if (typeof v !== "number") {
     if (/crore|\bcr\b/.test(s)) return { value: n * 100, issue: { severity: "info", field, code: "crore", message: `Read "${raw}" as ₹${n * 100} lakh.` } };
     if (/million|\bmn\b/.test(s)) return { value: n * 10, issue: { severity: "info", field, code: "million", message: `Read "${raw}" as ₹${n * 10} lakh.` } };

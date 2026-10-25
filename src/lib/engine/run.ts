@@ -3,7 +3,7 @@ import type {
   Result, Store, Territory, TerritoryResult, TextTags, Tier,
 } from "./types";
 import { ARCHETYPE_LABEL, CITY_BY_NAME, GAZETTEER, ROAD_FACTOR, cityForPin, findCity, km, type CityInfo } from "./reference";
-import { ruleTags, SEVERE_FLAG } from "./lexicon";
+import { isSoft, mergeSignals, ruleSignals, ruleTags, SEVERE_FLAG, stripSoft, UPPER_FLOOR, type Signals } from "./lexicon";
 import { LOCATION_LABELS, PARTNER_LABELS } from "./rubric";
 import { dimensions } from "./dimensions";
 
@@ -15,6 +15,8 @@ const clamp = (n: number, lo = 0, hi = 10) => Math.max(lo, Math.min(hi, n));
 const r1 = (n: number) => Math.round(n * 10) / 10;
 const lakh = (n: number) => `₹${r1(n)}L`;
 const PRI_RANK = { High: 3, Medium: 2, Low: 1 } as const;
+/** A slot is not held for a launch further out than this; the partner re-applies closer to the date. */
+const MAX_LAUNCH_MONTHS = 12;
 export const DECISION_RANK: Record<Decision, number> = { Approve: 4, Conditional: 3, Hold: 2, Reject: 1 };
 
 interface Dist { km: number; approx: boolean }
@@ -114,11 +116,17 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
   }
 
   // ---------- Applications: identity and data checks ----------
+  // Facts read from the free text: the AI's reading where it gave one, the rules otherwise.
+  const signalsFor = (a: Application): Signals => mergeSignals(ruleSignals(a), input.tags[a.id]?.signals);
   const seen = new Map<string, number>();
   const apps = input.applications.map((a) => {
     const n = (seen.get(a.id) ?? 0) + 1;
     seen.set(a.id, n);
-    return n > 1 ? { ...a, id: `${a.id}#${n}`, parseIssues: [...a.parseIssues, { severity: "warn" as const, code: "dup-id", message: `Application ID ${a.id} is used more than once — this row is labelled ${a.id}#${n}.` }] } : a;
+    const b = n > 1 ? { ...a, id: `${a.id}#${n}`, parseIssues: [...a.parseIssues, { severity: "warn" as const, code: "dup-id", message: `Application ID ${a.id} is used more than once — this row is labelled ${a.id}#${n}.` }] } : a;
+    // "Withdrawn – please do not process" in the notes counts, unless the team has since set it either way.
+    if (b.withdrawn === undefined && signalsFor(b).withdrawn)
+      return { ...b, withdrawn: true, parseIssues: [...b.parseIssues, { severity: "info" as const, code: "withdrawn-notes", message: `Notes say the applicant has withdrawn ("${b.notes.slice(0, 60)}").` }] };
+    return b;
   });
   const personKey = (a: Application) => `${a.name.toLowerCase().replace(/\s+/g, " ").trim()}|${a.pin}`;
   const firstByPerson = new Map<string, string>();
@@ -137,6 +145,30 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     if (firstByPerson.has(pk)) dupOf.set(a.id, firstByPerson.get(pk)!);
     else firstByPerson.set(pk, a.id);
   }
+  // The same person applying for several pins ("R. Naik" / "Ramesh Naik", same funds):
+  // their money can only fund one store, so only their best application can take a slot.
+  const sameAs = new Map<string, { ids: Set<string>; why: Map<string, string> }>();
+  const link = (x: Application, y: Application, why: string) => {
+    const gx = sameAs.get(x.id) ?? { ids: new Set([x.id]), why: new Map() };
+    const gy = sameAs.get(y.id) ?? { ids: new Set([y.id]), why: new Map() };
+    const g = gx === gy ? gx : { ids: new Set([...gx.ids, ...gy.ids]), why: new Map([...gx.why, ...gy.why]) };
+    g.why.set(`${x.id}~${y.id}`, why);
+    for (const id of g.ids) sameAs.set(id, g);
+  };
+  const live = apps.filter((a) => !a.withdrawn && a.name);
+  for (let i = 0; i < live.length; i++)
+    for (let j = i + 1; j < live.length; j++) {
+      const [x, y] = [live[i], live[j]];
+      if (dupOf.get(y.id) === x.id || dupOf.get(x.id) === y.id) continue;
+      const names = sameName(x.name, y.name);
+      const sx = signalsFor(x);
+      const sy = signalsFor(y);
+      const refers = (s: Signals, other: Application) => !!s.sameAs && normIdLoose(s.sameAs) === normIdLoose(other.id);
+      const sameMoney = x.investment !== null && x.investment === y.investment && x.experience === y.experience;
+      if (refers(sx, y) || refers(sy, x)) link(x, y, refers(sx, y) ? `${x.id}'s notes point to ${y.id}` : `${y.id}'s notes point to ${x.id}`);
+      else if (names && sameMoney) link(x, y, `same name and the same ₹${x.investment}L, ${x.experience} yrs`);
+      else if (names === "exact" && (sx.secondApplication || sy.secondApplication)) link(x, y, "same name, and the notes call it a second application");
+    }
 
   const assess = (raw: Application, relocatedFrom?: string): Work => {
     const rules = ruleTags(raw, brand, new Set(input.edited?.[raw.id] ?? []));
@@ -163,13 +195,19 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     if (app.space === "Not yet identified" && app.floor && app.floor !== "Not known") issues.push({ severity: "info", field: "floor", code: "floor-preference", message: `Floor "${app.floor}" given without a space — read as a preference only.` });
     if (app.experience === null) issues.push({ severity: "info", field: "experience", code: "assumed-exp", message: "Retail experience blank — assumed 0 years." });
     if (app.launch === null) issues.push({ severity: "info", field: "launch", code: "assumed-launch", message: "Target launch blank — assumed 6 months." });
-    if (!app.name) issues.push({ severity: "warn", field: "name", code: "missing-name", message: "Applicant name is blank." });
+    // A placeholder like "NA" or "-" is read as blank: we can't sign with someone we can't name.
+    if (!app.name) issues.push({ severity: "block", field: "name", code: "missing-name", message: "Applicant name is blank or a placeholder — ask who is applying." });
+    if (app.size !== null && app.size > 0 && app.size < 50 && app.space !== "Not yet identified")
+      issues.push({ severity: "block", field: "size", code: "implausible-size", message: `Space size of ${app.size} sq ft looks like a typo — confirm the real carpet area.` });
     if (dupOf.has(app.id)) issues.push({ severity: "warn", code: "dup-person", message: `Same name and pin as ${dupOf.get(app.id)} — likely a duplicate submission.` });
+    const group = sameAs.get(app.id);
+    if (group) issues.push({ severity: "warn", code: "same-person", message: `Likely the same applicant as ${[...group.ids].filter((i) => i !== app.id).join(", ")} (${[...group.why].filter(([k]) => k.split("~").includes(app.id)).map(([, v]) => v).join("; ") || "linked through another application"}).` });
+    const sig = signalsFor(app);
 
-    for (const c of tags.contradictions) issues.push({ severity: "warn", code: "contradiction", message: c });
+    for (const c of tags.contradictions) issues.push({ severity: "warn", code: "contradiction", message: stripSoft(c) });
     // Clear form-vs-notes conflicts found by the rules need one answer before deciding;
-    // softer ones read by the AI become a "confirm" condition instead.
-    const firmConflicts = rules.contradictions.filter((c) => !/size is filled in/i.test(c));
+    // softer ones (and those read by the AI) become a "confirm" condition instead.
+    const firmConflicts = rules.contradictions.filter((c) => !isSoft(c) && !/size is filled in/i.test(c));
 
     const city = cityByPin ?? cityByName;
     const ter = app.pin && !cityMismatch(app) ? pinOwner.get(app.pin) ?? null : null;
@@ -256,11 +294,16 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
         if (loan && sc > 0) sc -= 1;
         const pct = Math.round(r * 100);
         P("financial", sc, `${lakh(inv)} vs ${tier ?? "Tier 2"} minimum ${lakh(capex)} (${(r).toFixed(2)}×) · batch median ${lakh(medianInv)}${r >= 1.3 ? " — includes a working-capital buffer" : r >= 1 ? " — covers setup, thin buffer" : ""}${loan ? "; relies on a loan" : ""}.`);
-        if (r < rubric.capitalFloor) hard = `Severely undercapitalised: ${lakh(inv)} is ${pct}% of the ${lakh(capex)} needed (below ${Math.round(rubric.capitalFloor * 100)}%).`;
+        if (inv === 0) hard = "No funds stated: investment capacity is ₹0.";
+        else if (r < rubric.capitalFloor) hard = `Severely undercapitalised: ${lakh(inv)} is ${pct}% of the ${lakh(capex)} needed (below ${Math.round(rubric.capitalFloor * 100)}%).`;
         else if (r < 1) {
           conditions.push({ code: "funding-gap", text: `Close a funding gap of ${lakh(capex - inv)} (sanction letter or co-investor) before signing.`, lever: "capital" });
           majors++;
         }
+        if (sig.coInvestor && r >= rubric.capitalFloor)
+          conditions.push({ code: "co-investor", text: `Get proof of the ₹${sig.coInvestor.amount}L from the applicant's ${sig.coInvestor.from} (bank statement, gift deed or partnership terms) before signing.`, lever: "capital" });
+        if (sig.loan && !sig.loanSanctioned && r >= rubric.capitalFloor)
+          conditions.push({ code: "loan", text: `Show the bank's sanction letter before signing${sig.ownFunds !== null ? `: only ${lakh(sig.ownFunds)} of the ${lakh(inv)} is own money, the rest depends on a loan` : " — the notes say part of the money is a loan"}.`, lever: "capital" });
       }
     }
     // Operational
@@ -275,6 +318,11 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
         sc -= 2;
         conditions.push({ code: "manager", text: "Name a full-time store manager who completes the brand training.", lever: "manager" });
       }
+      if (y === 0 && app.experience !== null && !absent && brand.partnerOperates && !rules.contradictions.some((c) => /experience/i.test(c)))
+        conditions.push({ code: "manager", text: "No retail experience: hire a store manager with retail experience who completes the brand training alongside the partner.", lever: "manager" });
+      if (sig.proxy) conditions.push({ code: "operator", text: "Confirm who will run the store day to day; that person attends training and signs as the operator.", lever: "operator" });
+      if (sig.partnership) conditions.push({ code: "partnership", text: "Name the operating partner and share the partnership deed showing each partner's contribution.", lever: "operator" });
+      if (sig.competitorFranchise) conditions.push({ code: "non-compete", text: "Exit, or get a written release from, the competing franchise agreement before signing (non-compete).", lever: "non-compete" });
       if (brand.needsExistingBusiness && (tags.relevance === "none" || !app.business)) {
         sc -= 2;
         conditions.push({ code: "existing-shop", text: "This model needs a running shop to host the brand corner.", lever: "shop" });
@@ -365,13 +413,22 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
       }
       L("economics", e, ev, inv === null);
     }
+    let overlapHold: string | null = null;
     {
       const ns = nearestStore;
       const cityHasStore = city && stores.some((s) => cityForPin(s.pin)?.name === city.name);
-      if (ns && cityHasStore) {
+      // What the applicant says about distance beats a pin-centroid estimate.
+      const said = cityHasStore ? sig.overlap : null;
+      if (said && ns) {
+        L("competition", said.level === "direct" ? 0 : 2, `Notes say the site is "${said.phrase}" — overlaps the catchment of own store ${ns.id} (cannibalisation).`);
+        if (said.level === "direct") overlapHold = `Cannibalisation: the notes say the site is "${said.phrase}" (nearest own store ${ns.id}). A store this close mostly takes sales from ${ns.id}; the expansion team must sign off before it goes forward.`;
+        else conditions.push({ code: "catchment", text: `Catchment check: the site is close to own store ${ns.id} ("${said.phrase}"); the expansion team confirms the overlap is acceptable.`, lever: "pin" });
+      } else if (ns && cityHasStore) {
         const d = ns.km;
         const sc = d < rubric.saturationKm ? 2 : d < 4 ? 5 : d < 7 ? 8 : 9;
         L("competition", sc, `Nearest own store ${ns.id} is ${ns.approx ? "~" : ""}${d} km away${d < rubric.saturationKm ? " — catchments overlap (cannibalisation)" : d < 4 ? " — partial catchment overlap" : " — proven city, separate catchment"}.`);
+        // d = 0 is the store's own pin: the same-pin rule handles that, not a catchment check.
+        if (d > 0 && d < rubric.saturationKm && !ns.approx) conditions.push({ code: "catchment", text: `Catchment check: own store ${ns.id} is ${ns.approx ? "~" : ""}${d} km away; the expansion team confirms the overlap is acceptable.`, lever: "pin" });
       } else L("competition", ter?.priority === "High" ? 9.5 : 7.5, `White space — no own store in ${city?.name ?? "this city"} yet${ter?.priority === "High" ? ", and it is a High-priority territory" : ""}.`);
     }
     // Competitors nearby: other brands in the same category around the pin.
@@ -406,15 +463,22 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     const capitalFail = hard;
     hard = null;
     let outside = false;
+    let noSlot: string | null = null;
     if (app.withdrawn) hard = "Withdrawn by the applicant.";
     else if (cityMismatch(app)) hard = null; // don't reject on a location the applicant may not mean
     else if (st) hard = `Pin ${app.pin} already has store ${st.id} (opened ${st.opened ?? "earlier"}). The brand never opens two stores in one pin code.`;
     else if (app.pin && !cityForPin(app.pin) && !issues.some((i) => i.severity === "block")) outside = true;
     else if (scenario === "A" && !ter && app.pin && !issues.some((i) => i.severity === "block")) outside = true;
-    else if (ter && cap === 0) hard = `${ter.id} has no open slot${(ter.slots ?? 0) > 0 ? " left once existing stores are counted" : " (0 open slots)"}.`;
-    else hard = capitalFail;
+    else if (ter && cap === 0) {
+      // No room is the brand's constraint, not the partner's failing: waitlist, like a pin outside every territory.
+      hard = capitalFail;
+      if (!hard) noSlot = `${ter.id} has no open slot${(ter.slots ?? 0) > 0 ? " left once existing stores are counted" : " (0 open slots)"}. Kept on the waitlist — it goes forward if the brand opens a slot here.`;
+    } else hard = capitalFail;
 
-    let hold: string | null = outside && !cityForPin(app.pin) ? `Outside the expansion area: ${app.city || "this location"} (pin ${app.pin}) is not one of the seven cities the brand is expanding in. Kept on the waitlist.` : outside ? `Outside the expansion area: pin ${app.pin} is in no territory, while ${matched.length} other application${matched.length === 1 ? " is" : "s are"} (Phase 1 check). Kept on the waitlist — it goes forward if the team adds this pin.` : null;
+    let hold: string | null = outside && !cityForPin(app.pin) ? `Outside the expansion area: ${app.city || "this location"} (pin ${app.pin}) is not one of the seven cities the brand is expanding in. Kept on the waitlist.` : outside ? `Outside the expansion area: pin ${app.pin} is in no territory, while ${matched.length} other application${matched.length === 1 ? " is" : "s are"} (Phase 1 check). Kept on the waitlist — it goes forward if the team adds this pin.` : noSlot;
+    if (!hard && !hold && (app.launch ?? 0) > MAX_LAUNCH_MONTHS)
+      hold = `Deferred: the target launch is ${app.launch} months away, so a slot would sit idle. Re-apply about 6 months before opening; the slot goes to a partner who can open sooner.`;
+    if (!hard && !hold && overlapHold) hold = overlapHold;
     const blocks = issues.filter((i) => i.severity === "block");
     if (!hard && !hold && blocks.length) {
       hold = `Needs information: ${blocks.map((b) => b.message).join(" ")}`;
@@ -424,10 +488,14 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     if (!hard && !hold && dupOf.has(app.id)) hold = `Duplicate of ${dupOf.get(app.id)} (same applicant and pin) — merge the two before deciding.`;
     const severe = tags.redFlags.filter((f) => SEVERE_FLAG.test(f));
     if (!hard && !hold && severe.length) hold = `Verify before deciding: ${severe.join("; ").toLowerCase()}.`;
-    if (!hard && !hold && firmConflicts.length) hold = `Needs clarification: ${firmConflicts.join("; ")}${app.notes ? ` (notes: "${app.notes.slice(0, 90)}${app.notes.length > 90 ? "…" : ""}")` : ""}.`;
+    if (!hard && !hold && firmConflicts.length) hold = `Needs clarification: ${firmConflicts.join("; ")}${app.notes ? ` (notes: "${quoteAround(app.notes)}")` : ""}.`;
     for (const f of tags.redFlags) if (!SEVERE_FLAG.test(f)) flags.push(f);
     if (!ter && scenario === "B") conditions.push({ code: "territory", text: "Outside the current expansion plan — the team must open a territory for this pin.", lever: "territory" });
-    for (const c of tags.contradictions) if (!firmConflicts.includes(c)) conditions.push({ code: "confirm", text: `Confirm: ${c.charAt(0).toLowerCase()}${c.slice(1)}.` });
+    for (const c0 of tags.contradictions) {
+      if (firmConflicts.includes(c0)) continue;
+      const c = stripSoft(c0);
+      conditions.push({ code: "confirm", text: `Confirm: ${c.charAt(0).toLowerCase()}${c.slice(1)}.` });
+    }
 
     if (relocatedFrom) conditions.unshift({ code: "relocate-pin", text: `Relocate from pin ${relocatedFrom} (taken by a higher score) to free pin ${app.pin}${locality ? ` — ${locality.name}` : ""}; site team to confirm a space there.`, lever: "pin" });
     return { app, city, ter, tier, tags, locality, issues, flags, conditions, majors, factors, partnerScore, locationScore, score, hard, hold, nearestStore, capex, relocatedFrom };
@@ -436,9 +504,34 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
 
   // ---------- Allocation: one store per pin, best score wins each slot ----------
   const fscore = (w: Work, keys: string[]) => w.factors.filter((f) => keys.includes(f.key)).reduce((x, f) => x + f.score * f.weight, 0);
-  // Tie-break: score, then capital, then site readiness, then the sooner launch, then the lower ID.
+  // Tie-break: score, then capital, then site readiness (form, then notes), then the sooner launch, then the lower ID.
+  const SITE = ["floor", "size", "ownership"];
+  const ready = (w: Work) => signalsFor(w.app).siteReady;
   const rankCmp = (a: Work, b: Work) =>
-    b.score - a.score || fscore(b, ["financial"]) - fscore(a, ["financial"]) || fscore(b, ["floor", "size", "ownership"]) - fscore(a, ["floor", "size", "ownership"]) || (a.app.launch ?? 6) - (b.app.launch ?? 6) || a.app.id.localeCompare(b.app.id, undefined, { numeric: true });
+    b.score - a.score || fscore(b, ["financial"]) - fscore(a, ["financial"]) || fscore(b, SITE) - fscore(a, SITE) || ready(b) - ready(a) || (a.app.launch ?? 6) - (b.app.launch ?? 6) || a.app.id.localeCompare(b.app.id, undefined, { numeric: true });
+  /** Names the step that separated two equal scores, so a tie never reads as "75.7 vs 75.7". */
+  const tieWhy = (win: Work, lose: Work) => {
+    if (win.score !== lose.score) return "";
+    const steps: [string, number][] = [
+      ["more capital", fscore(win, ["financial"]) - fscore(lose, ["financial"])],
+      ["a readier site", fscore(win, SITE) - fscore(lose, SITE)],
+      [`a space that is ready now (notes: "${win.app.notes.slice(0, 50)}")`, ready(win) - ready(lose)],
+      ["the sooner launch", (lose.app.launch ?? 6) - (win.app.launch ?? 6)],
+    ];
+    const hit = steps.find(([, d]) => d !== 0);
+    return hit ? ` Scores are tied; the tie-break went to ${win.app.id} for ${hit[0]}.` : ` Scores are tied on every factor; the lower application ID broke the tie — the team may override.`;
+  };
+
+  // One store per person: of a linked applicant's applications, only the strongest goes forward.
+  const seenGroups = new Set<object>();
+  for (const w of work) {
+    const g = sameAs.get(w.app.id);
+    if (!g || seenGroups.has(g)) continue;
+    seenGroups.add(g);
+    const live = work.filter((x) => g.ids.has(x.app.id) && !x.hard && !x.hold).sort(rankCmp);
+    for (const m of live.slice(1))
+      m.hold = `Same applicant as ${live[0].app.id}, which scores higher (${live[0].score} vs ${m.score}). One applicant's funds back one store from this batch; prove separate funds for a second store to be considered.`;
+  }
 
   type Status = { slot: Result["slot"]; decision: Decision; headline: string; pinRival?: string; rank?: Result["rank"] };
   const status = new Map<string, Status>();
@@ -464,7 +557,7 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     if (list.length > 1) contestedPins++;
     for (const loser of list.slice(1)) {
       pinLosers.push(loser);
-      status.set(loser.app.id, { slot: "lost-pin", decision: "Hold", pinRival: list[0].app.id, headline: `${list[0].app.id} scored higher for the same pin ${p} (${list[0].score} vs ${loser.score}), and no free pin in ${loser.ter?.id ?? "the area"} is left for a move. Only one store per pin.` });
+      status.set(loser.app.id, { slot: "lost-pin", decision: "Hold", pinRival: list[0].app.id, headline: `${list[0].app.id} scored higher for the same pin ${p} (${list[0].score} vs ${loser.score}), and no free pin in ${loser.ter?.id ?? "the area"} is left for a move. Only one store per pin.${tieWhy(list[0], loser)}` });
     }
   }
   const terPool = new Map<string, Work[]>();
@@ -525,7 +618,7 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
       } else {
         waitlist.set(tid, [...(waitlist.get(tid) ?? []), w.app.id]);
         const took = seated.map((x) => `${x.app.id} ${x.score}`).join(", ");
-        status.set(w.app.id, { slot: "waitlist", rank: { territory: i + 1, of: list.length }, decision: "Hold", headline: `Waitlisted #${waitlist.get(tid)!.length} for ${tid}: its ${cap} slot${cap === 1 ? "" : "s"} went to higher scores (${took}); this application scored ${w.score}.` });
+        status.set(w.app.id, { slot: "waitlist", rank: { territory: i + 1, of: list.length }, decision: "Hold", headline: `Waitlisted #${waitlist.get(tid)!.length} for ${tid}: its ${cap} slot${cap === 1 ? "" : "s"} went to higher scores (${took}); this application scored ${w.score}.${seated.length ? tieWhy(seated[seated.length - 1], w) : ""}` });
       }
     });
   }
@@ -571,6 +664,11 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     const ownBonus = w.app.space === "Owned" ? { "Tier 1": 0.08, "Tier 2": 0.06, "Tier 3": 0.05 }[w.tier ?? "Tier 2"] : 0;
     const monthlyProfit = r1(brand.revenueLakhPerMonth[w.tier ?? "Tier 2"] * (brand.marginPct / 100 + ownBonus));
     const override = input.overrides[w.app.id];
+    const alts = s.decision === "Approve" ? [] : alternatives(w);
+    // A strong partner turned away only for their pin still needs a next step.
+    const headline = s.decision === "Reject" && storeByPin.has(w.app.pin) && !alts.length && w.city
+      ? `${s.headline} No other pin in ${w.city.name} has a free slot right now — kept on file for the next territory release.`
+      : s.headline;
     const res: Result = {
       id: w.app.id,
       app: w.app,
@@ -580,7 +678,7 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
       decision: override?.decision ?? s.decision,
       engineDecision: s.decision,
       override,
-      headline: s.headline,
+      headline,
       reasons: [...strengths, ...gaps],
       conditions: s.decision === "Approve" || s.decision === "Conditional" ? w.conditions : w.conditions.filter((c) => c.code !== "below-bar"),
       issues: w.issues,
@@ -595,7 +693,7 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
       slot: s.slot,
       pinRival: s.pinRival,
       nextInLine,
-      alternatives: s.decision === "Approve" ? [] : alternatives(w),
+      alternatives: alts,
       nearestStore: w.nearestStore,
       buddyStore: buddy,
       payback: { capex: w.capex, monthlyProfit, months: monthlyProfit > 0 ? Math.round(w.capex / monthlyProfit) : 0 },
@@ -655,6 +753,35 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     ranAt: new Date().toISOString(),
   };
 }
+
+// Common spellings of the same first name, so "Mohd. Rafiq" and "Mohammed Rafiq" compare equal.
+const NAME_ALIAS: Record<string, string> = {
+  mohd: "mohammed", md: "mohammed", mohamed: "mohammed", mohammad: "mohammed", muhammad: "mohammed", muhammed: "mohammed",
+  laxmi: "lakshmi", lakshmy: "lakshmi", shrinivas: "srinivas", sreenivas: "srinivas", srinivasa: "srinivas",
+  sayed: "syed", saiyed: "syed", venkatesha: "venkatesh", raghavendra: "raghavendra", nagaraja: "nagaraj", manjunatha: "manjunath",
+};
+const nameTokens = (n: string) =>
+  n.toLowerCase().replace(/\b(mr|mrs|ms|dr|shri|smt)\b\.?/g, " ").replace(/[^a-z\s]/g, " ").split(/\s+/).filter(Boolean).map((t) => NAME_ALIAS[t] ?? t);
+/** "Ramesh Naik" vs "Ramesh Naik" → exact; "R. Naik" vs "Ramesh Naik" → initial; else null. */
+function sameName(a: string, b: string): "exact" | "initial" | null {
+  const x = nameTokens(a);
+  const y = nameTokens(b);
+  if (!x.length || !y.length) return null;
+  if (x.join(" ") === y.join(" ")) return "exact";
+  if (x.length > 1 && y.length > 1 && x.at(-1) === y.at(-1) && x[0][0] === y[0][0] && (x[0].length === 1 || y[0].length === 1)) return "initial";
+  return null;
+}
+/** Quote the part of a long note that holds the conflicting fact, not just its opening line. */
+function quoteAround(notes: string): string {
+  if (notes.length <= 90) return notes;
+  const lower = notes.toLowerCase();
+  const fl = lower.search(UPPER_FLOOR);
+  const i = fl >= 0 ? fl : lower.search(/\brent|\blease|looking for|no shop|yet to find|searching|already have|\bfresh|graduate|no experience|never (run|worked)/);
+  if (i < 0) return `${notes.slice(0, 90)}…`;
+  const from = Math.max(0, notes.lastIndexOf(" ", Math.max(0, i - 35)));
+  return `${from > 0 ? "…" : ""}${notes.slice(from, i + 60).trim()}${i + 60 < notes.length ? "…" : ""}`;
+}
+const normIdLoose = (s: string) => s.toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/^([A-Z]+)0*/, "$1");
 
 function cityMismatch(a: Application): boolean {
   const bp = a.pin ? cityForPin(a.pin) : null;

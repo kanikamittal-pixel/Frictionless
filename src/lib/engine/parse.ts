@@ -98,7 +98,7 @@ export interface ParsedWorkbook {
 }
 
 export function parseWorkbook(data: ArrayBuffer): ParsedWorkbook {
-  const wb = XLSX.read(data, { type: "array" });
+  const wb = XLSX.read(data, { type: "array", cellStyles: true });
   const issues: Issue[] = [];
   const sheets: ParsedWorkbook["sheets"] = [];
   let applications: Application[] = [];
@@ -113,7 +113,13 @@ export function parseWorkbook(data: ArrayBuffer): ParsedWorkbook {
       sheets.push({ name, kind: "ignored", rows: rows.length });
       continue;
     }
-    const body = rows.slice(t.headerRow + 1).filter((r) => r && r.some((c) => c !== null && String(c).trim() !== ""));
+    let body = rows.slice(t.headerRow + 1).filter((r) => r && r.some((c) => c !== null && String(c).trim() !== ""));
+    // The official template puts a grey example row right under the headers
+    // ("Row 3 is an example (grey); enter data from row 4"). It is not data.
+    if (t.kind !== "stores" && body.length && isExampleRow(ws, rows, t.headerRow) && matchesTemplateExample(t.kind, t.cols, body)) {
+      body = body.slice(1);
+      issues.push({ severity: "info", code: "example-row", message: `${name}: skipped the template's example row (row ${t.headerRow + 2}).` });
+    }
     const headers = rows[t.headerRow] ?? [];
     const toObj = (r: unknown[]) => {
       const o: Row = {};
@@ -137,6 +143,41 @@ export function parseWorkbook(data: ArrayBuffer): ParsedWorkbook {
     storesSource = "built-in";
   }
   return { applications, territories, stores, storesSource, sheets, issues };
+}
+
+/** The row under the headers is the template's example: the title says so, or it is shaded and the next row is not. */
+function isExampleRow(ws: XLSX.WorkSheet, rows: unknown[][], headerRow: number): boolean {
+  const above = rows.slice(0, headerRow).flat().map((c) => String(c ?? "")).join(" ");
+  if (/\bexample\b/i.test(above) && /enter data|row \d+ is an example/i.test(above)) return true;
+  const range = XLSX.utils.decode_range(ws["!ref"] ?? "A1");
+  const shaded = (r: number) => {
+    const s = (ws[XLSX.utils.encode_cell({ r, c: range.s.c })] as { s?: { patternType?: string; fgColor?: { rgb?: string } } } | undefined)?.s;
+    return s?.patternType === "solid" && !!s.fgColor?.rgb && !/^(FF)?FFFFFF$/i.test(s.fgColor.rgb);
+  };
+  // sheet_to_json skips blank rows, so map back through the sheet's own row numbers.
+  const first = range.s.r + headerRow + 1;
+  return shaded(first) && !shaded(first + 1);
+}
+
+/**
+ * Row 3 still holds the template's own example (Ravi Kumar / TER-01 Mysuru 570001, 570002, 570008).
+ * If the judges typed a real application over it, the note and the shading stay but the content changes,
+ * so the row is kept. It is dropped only when its ID is used again below (real data also starts at
+ * APP-001 / TER-01) or every value is still the template's.
+ */
+function matchesTemplateExample(kind: Kind, cols: Record<string, number>, body: unknown[][]): boolean {
+  const cell = (row: unknown[], f: string) => (cols[f] === undefined ? "" : String(row[cols[f]] ?? "").toLowerCase().replace(/\s+/g, " ").trim());
+  const [row, ...rest] = body;
+  const id = N.normId(cell(row, "id"));
+  const repeated = rest.some((r) => N.normId(cell(r, "id")) === id);
+  const pinsOf = (r: unknown[], f: string) => (cell(r, f).match(/\d{6}/g) ?? []).sort().join(",");
+  if (kind === "applications") {
+    if (id !== "APP-001" || cell(row, "name") !== "ravi kumar") return false;
+    const pin = pinsOf(row, cols.pin !== undefined ? "pin" : "cityStatePin");
+    return repeated || (pin === "570001" && cell(row, "investment") === "25" && cell(row, "experience") === "4" && /before diwali/.test(cell(row, "notes")));
+  }
+  if (id !== "TER-01" || pinsOf(row, "pins") !== "570001,570002,570008") return false;
+  return repeated || (cell(row, "slots") === "3" && cell(row, "priority") === "high");
 }
 
 function splitCityStatePin(v: unknown): { city: string; state: string; pin: string } {

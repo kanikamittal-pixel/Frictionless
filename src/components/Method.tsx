@@ -40,7 +40,7 @@ export default function Method() {
     <>
       <p className="eyebrow muted">Transparency</p>
       <h1 className="h-page" style={{ marginTop: 8 }}>
-        How Outpost decides
+        How Frictionless decides
       </h1>
       <p className="lede" style={{ marginTop: 10 }}>
         The decision is made by a deterministic engine — same inputs, same answer, every time. The AI reads messy text and explains decisions; it never changes a score.

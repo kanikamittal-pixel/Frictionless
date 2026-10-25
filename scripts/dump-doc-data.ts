@@ -9,7 +9,7 @@ import { metrics, dimensionsWithMetrics, gates, bands, DIM_BLURB } from "../src/
 import { applyEdits } from "../src/lib/engine/patch";
 import { buildPlan } from "../src/lib/engine/plan";
 const brand = buildProfile("eyewear", "fofo");
-const buf = readFileSync("public/sample/Outpost_Sample_Batch.xlsx");
+const buf = readFileSync("public/sample/Frictionless_Sample_Batch.xlsx");
 const wb = parseWorkbook(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
 const input = { applications: wb.applications, territories: wb.territories, stores: wb.stores, brand, rubric: DEFAULT_RUBRIC, tags: {}, localities: {}, overrides: {} };
 const out = runEngine(input);

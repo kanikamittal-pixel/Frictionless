@@ -1,4 +1,4 @@
-# Outpost — franchise partner engine
+# Frictionless — franchise partner engine
 
 Mesa Ops Hackathon, Case 1 (Franchise Partner Acquisition, Geo-Selection & Onboarding).
 
@@ -29,7 +29,7 @@ npm run dev                        # http://localhost:3000
 
 Without the AI key, the app still decides everything: a rule-based reader and a rule-based chat take over. Without the database, batches live only in the visitor's browser.
 
-`public/sample/Outpost_Sample_Batch.xlsx` is a 28-row batch seeded with the brief's edge cases. Regenerate it with `npx tsx scripts/make-sample.ts`. `npx tsx scripts/try-engine.ts [file] [industry] [model]` prints every decision from the command line.
+`public/sample/Frictionless_Sample_Batch.xlsx` is a 28-row batch seeded with the brief's edge cases. Regenerate it with `npx tsx scripts/make-sample.ts`. `npx tsx scripts/try-engine.ts [file] [industry] [model]` prints every decision from the command line.
 
 ## How it decides
 

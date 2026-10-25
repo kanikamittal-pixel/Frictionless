@@ -1,4 +1,4 @@
-// Shared types for the Outpost decision engine. The engine is a pure function:
+// Shared types for the Frictionless decision engine. The engine is a pure function:
 // (applications, territories, stores, brand, rubric, tags, edits) -> decisions.
 
 export type Tier = "Tier 1" | "Tier 2" | "Tier 3";

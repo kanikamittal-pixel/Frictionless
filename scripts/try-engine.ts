@@ -4,7 +4,7 @@ import { runEngine } from "../src/lib/engine/run";
 import { buildProfile } from "../src/lib/engine/brand";
 import { DEFAULT_RUBRIC } from "../src/lib/engine/rubric";
 
-const buf = readFileSync(process.argv[2] ?? "public/sample/Outpost_Sample_Batch.xlsx");
+const buf = readFileSync(process.argv[2] ?? "public/sample/Frictionless_Sample_Batch.xlsx");
 const wb = parseWorkbook(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
 console.log("sheets", wb.sheets, "stores", wb.storesSource, wb.issues);
 const brand = buildProfile(process.argv[3] ?? "eyewear", process.argv[4] ?? "fofo");

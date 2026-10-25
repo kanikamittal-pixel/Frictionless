@@ -76,10 +76,10 @@ export function Icon({ name, size = 18, stroke = 2 }: { name: keyof typeof PATHS
 }
 
 export function LogoMark() {
-  // "OP." — the word mark, with the accent full stop.
+  // "FR." — the word mark, with the accent full stop.
   return (
     <span style={{ fontSize: 27, fontWeight: 500, letterSpacing: "-0.08em", lineHeight: 1 }} aria-hidden>
-      OP<span style={{ color: "var(--accent)" }}>.</span>
+      FR<span style={{ color: "var(--accent)" }}>.</span>
     </span>
   );
 }

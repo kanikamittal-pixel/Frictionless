@@ -54,7 +54,7 @@ def swimlane():
     cols = ["Trigger", "Input", "Context", "Processing", "Output", "Feedback", "Improve"]
     lanes = [
         ("Expansion team", "the user"),
-        ("Outpost app", "browser · Next.js"),
+        ("Frictionless app", "browser · Next.js"),
         ("AI model", "Gemini Flash via OpenRouter"),
         ("Decision engine", "deterministic code"),
         ("Database", "Postgres (Neon)"),
@@ -425,21 +425,21 @@ table.lv td.v {{ text-align: right; font-family: 'Geist Mono', monospace; font-s
 """
 
 TOC = [
-    ("01", "What Outpost does"), ("02", "System flow — the swimlane"), ("03", "Inputs: the two trigger choices and three sheets"),
+    ("01", "What Frictionless does"), ("02", "System flow — the swimlane"), ("03", "Inputs: the two trigger choices and three sheets"),
     ("04", "Reading messy data"), ("05", "Decision pipeline — step by step"), ("06", "Scoring rubric: 5 dimensions, 14 metrics"),
     ("07", "From score to decision"), ("08", "Allocation: one store per pin"), ("09", "Outputs: plan, payback, explanation"),
     ("10", "Feedback and improve loops"), ("11", "Where AI is used — and where it isn't"), ("12", "Worked example and sample batch"),
     ("13", "Assumptions and limits"),
 ]
 
-HTML = f"""<!doctype html><html><head><meta charset="utf-8"><title>Outpost — Decision criteria and system flow</title><style>{CSS}</style></head><body>
+HTML = f"""<!doctype html><html><head><meta charset="utf-8"><title>Frictionless — Decision criteria and system flow</title><style>{CSS}</style></head><body>
 
 <section class="cover grid-bg" style="padding:8mm">
-  <div style="display:flex;justify-content:space-between" class="mono"><span>OP<span style="color:{ACC}">.</span> Outpost · Franchise partner engine</span><span>Ops Hackathon · Case 1</span></div>
+  <div style="display:flex;justify-content:space-between" class="mono"><span>FR<span style="color:{ACC}">.</span> Frictionless · Franchise partner engine</span><span>Ops Hackathon · Case 1</span></div>
   <div>
     <p class="mono" style="color:{ACC}">Design document · v1 · 25 Oct 2026</p>
     <h1>Decision criteria<br/>and system flow<span class="dot">.</span></h1>
-    <p class="lead" style="margin-top:16px">How Outpost reads franchise applications, scores every partner out of 100, gives each territory slot to the best partner, and explains the decision — with every rule, weight and threshold the engine uses.</p>
+    <p class="lead" style="margin-top:16px">How Frictionless reads franchise applications, scores every partner out of 100, gives each territory slot to the best partner, and explains the decision — with every rule, weight and threshold the engine uses.</p>
   </div>
   <div>
     <div class="toc">{''.join(f'<div><span class="mono">{n}</span><span>{esc(t)}</span></div>' for n, t in TOC)}</div>
@@ -448,9 +448,9 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><title>Outpost — D
 </section>
 
 <section class="sec">
-  <div class="sec-h"><span>[01] What Outpost does</span><span>Overview</span></div>
+  <div class="sec-h"><span>[01] What Frictionless does</span><span>Overview</span></div>
   <h2>Every application, decided — with a reason.</h2>
-  <p class="lead">The expansion team picks the brand's industry and business model and uploads the applications and territories sheets. For every partner Outpost returns <b>Approve, Conditional, Hold or Reject</b>, the reason, the conditions to close, who they competed with, a simulated “path to yes”, and a dated onboarding plan in the partner's language. The team can then ask why, or give new information and see exactly who moves before anything is saved.</p>
+  <p class="lead">The expansion team picks the brand's industry and business model and uploads the applications and territories sheets. For every partner Frictionless returns <b>Approve, Conditional, Hold or Reject</b>, the reason, the conditions to close, who they competed with, a simulated “path to yes”, and a dated onboarding plan in the partner's language. The team can then ask why, or give new information and see exactly who moves before anything is saved.</p>
   <h3>Design principles</h3>
   <table class="t"><tbody>
     <tr><td style="width:34%"><b>The engine decides; the AI never scores</b></td><td>Decisions come from deterministic code — the same file always gives the same answer. The AI reads messy text, explains, translates and turns chat into edits.</td></tr>
@@ -653,7 +653,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><title>Outpost — D
     <li><b>Preferred language</b> counts in “local nuance” (10% of partner fit), following the team's applicant rubric.</li>
     <li><b>Financial strength beyond stated investment</b> and traits like coachability are checked in the interview, not scored.</li>
   </ul>
-  <p class="mono" style="margin-top:30px">Outpost · generated from the live engine on 25 Oct 2026 · rubric v{R['version']} · {esc(B['industry'])} · FOFO</p>
+  <p class="mono" style="margin-top:30px">Frictionless · generated from the live engine on 25 Oct 2026 · rubric v{R['version']} · {esc(B['industry'])} · FOFO</p>
 </section>
 </body></html>"""
 

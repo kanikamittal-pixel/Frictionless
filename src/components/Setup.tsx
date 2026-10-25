@@ -48,8 +48,8 @@ export default function Setup({ onFile, aiOn, resume, onResume, onScoring }: { o
 
   const read = (f: File) => f.arrayBuffer().then((b) => onFile(b, f.name));
   const sample = async () => {
-    const r = await fetch("/sample/Outpost_Sample_Batch.xlsx");
-    onFile(await r.arrayBuffer(), "Outpost_Sample_Batch.xlsx");
+    const r = await fetch("/sample/Frictionless_Sample_Batch.xlsx");
+    onFile(await r.arrayBuffer(), "Frictionless_Sample_Batch.xlsx");
   };
   const customKey = `${setup.industryKey}|${setup.modelKey}|${setup.customIndustry}|${setup.customModel}`;
   const needsBuild = (otherInd || otherMod) && setup.builtFor !== customKey;
@@ -60,7 +60,7 @@ export default function Setup({ onFile, aiOn, resume, onResume, onScoring }: { o
       <Terrain className="hero-band">
         <div className="setup" style={{ paddingBottom: 56 }}>
       <div className="metarow eyebrow muted">
-        <span>Outpost · Franchise partner engine</span>
+        <span>Frictionless · Franchise partner engine</span>
         <span>Base · Karnataka · 7 cities · 10 stores</span>
         <span>Taking new batches</span>
       </div>
@@ -194,7 +194,7 @@ export default function Setup({ onFile, aiOn, resume, onResume, onScoring }: { o
             <h3>Upload</h3>
             <p className="small muted" style={{ marginTop: 10 }}>
               Sheet 1 Applications and Sheet 2 Territories. Sheet 3 (existing stores) is built in. Read in your browser.{" "}
-              <a className="linkbtn" href="/sample/Outpost_Sample_Batch.xlsx" download>
+              <a className="linkbtn" href="/sample/Frictionless_Sample_Batch.xlsx" download>
                 Download the sample
               </a>
             </p>

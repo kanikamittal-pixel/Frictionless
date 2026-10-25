@@ -1,4 +1,4 @@
-// Builds public/sample/Outpost_Sample_Batch.xlsx in the judges' template
+// Builds public/sample/Frictionless_Sample_Batch.xlsx in the judges' template
 // format, seeded with the messy cases the brief warns about.
 import * as XLSX from "xlsx";
 import { writeFileSync } from "node:fs";
@@ -62,6 +62,6 @@ XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([A, ...apps]), "Applica
 XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([T, ...ters]), "Territories");
 XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([S, ...stores]), "Existing stores");
 XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(G), "Glossary");
-const out = process.argv[2] ?? "public/sample/Outpost_Sample_Batch.xlsx";
+const out = process.argv[2] ?? "public/sample/Frictionless_Sample_Batch.xlsx";
 writeFileSync(out, XLSX.write(wb, { type: "buffer", bookType: "xlsx" }));
 console.log("wrote", out, apps.length, "applications");

@@ -188,10 +188,10 @@ export default function App() {
   return (
     <>
       <header className="bar">
-        <button className="logo" onClick={() => (showWorkspace ? go("overview") : undefined)} aria-label="Outpost overview">
+        <button className="logo" onClick={() => (showWorkspace ? go("overview") : undefined)} aria-label="Frictionless overview">
           <LogoMark />
           <span className={`brandname${showWorkspace ? " in-app" : ""}`}>
-            <b>Outpost</b>
+            <b>Frictionless</b>
             <span>/ Franchise engine</span>
           </span>
         </button>

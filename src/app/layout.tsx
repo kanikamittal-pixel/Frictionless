@@ -6,7 +6,7 @@ const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Outpost — Franchise Partner Engine",
+  title: "Frictionless — Franchise Partner Engine",
   description: "Upload franchise applications and territories; get a decision, a reason and an onboarding plan for every partner.",
 };
 

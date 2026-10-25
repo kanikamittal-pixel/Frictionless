@@ -56,7 +56,7 @@ export function buildPlan(r: Result, brand: BrandProfile, today = new Date()): P
         add(30, { phase: "Next step", owner: "Brand", title: "Re-check the slot", detail: "If an approved partner misses their conditions, this partner moves up automatically." });
       } else {
         add(2, { phase: "Next step", owner: "Brand", title: "Ask for the missing or conflicting details", detail: r.issues.filter((i) => i.severity !== "info").map((i) => i.message).join(" ") || r.headline });
-        add(7, { phase: "Next step", owner: "Brand", title: "Re-run the decision", detail: "Type the new information into Outpost; the decision updates for this partner and anyone competing with them." });
+        add(7, { phase: "Next step", owner: "Brand", title: "Re-run the decision", detail: "Type the new information into Frictionless; the decision updates for this partner and anyone competing with them." });
       }
     } else {
       add(3, { phase: "Next step", owner: "Brand", title: `Send a respectful decline in ${lang}`, detail: r.headline });

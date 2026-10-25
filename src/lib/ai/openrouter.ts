@@ -33,7 +33,7 @@ export async function callJson<T>(opts: { system: string; user: string; speed?: 
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "X-Title": "Outpost franchise engine",
+          "X-Title": "Frictionless franchise engine",
         },
         body: JSON.stringify({
           model,

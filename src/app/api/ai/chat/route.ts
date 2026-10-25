@@ -11,7 +11,7 @@ interface In {
   context: Record<string, unknown>;
 }
 
-const SYSTEM = `You are Outpost, the expansion team's analyst for franchise-partner decisions.
+const SYSTEM = `You are Frictionless, the expansion team's analyst for franchise-partner decisions.
 You receive the full batch: brand profile, rubric, every application with its decision, score, reasons, conditions and "paths" (single changes that would improve its decision), and every territory with capacity and allocation. "focus" holds full factor-level records for the IDs in the question.
 
 Decide what the user wants and return JSON:

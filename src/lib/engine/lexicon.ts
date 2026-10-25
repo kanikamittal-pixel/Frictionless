@@ -67,7 +67,23 @@ export function ruleTags(app: Application, brand: BrandProfile, updated: Set<str
   c("experience", (app.experience ?? 0) === 0 && !!direct && has(biz, /runs|running|own|manag/), "Runs a related business today, but experience is 0 years");
   c("size", app.space === "Not yet identified" && (app.size ?? 0) > 0, "Space size is filled in although no space is identified");
 
-  return { category, relevance, urgency, deadline, intent, redFlags, positives, locationCues: [...cues], contradictions, fills: ruleFills(app), source: "rules" };
+  return { category, relevance, urgency, deadline, intent, redFlags, positives, locationCues: [...cues], contradictions, fills: ruleFills(app), competitors: ruleCompetitors(notes), source: "rules" };
+}
+
+/** What the applicant says about competing shops, if anything. */
+export function ruleCompetitors(notes: string): TextTags["competitors"] {
+  const t = notes.toLowerCase();
+  const shop = "(?:shops?|stores?|outlets?|showrooms?|opticians?|optical|chemists?|pharmac(?:y|ies)|salons?|restaurants?|cafes?|competitors?)";
+  const quote = (re: RegExp) => notes.slice(Math.max(0, t.search(re)), Math.max(0, t.search(re)) + 60).replace(/[.;,]\s.*$/, "").trim();
+  const none = new RegExp(`\\b(no|zero|not a single|hardly any)\\s+(other\\s+)?(\\w+\\s+)?${shop}|no competition|only (one|shop|store) (of its kind|in the area)|first (\\w+ )?${shop} (in|on|around)`);
+  const many = new RegExp(`\\b(many|lots of|plenty of|too many|crowded|saturated|\\d{2,}|[89])\\s+(\\w+\\s+)?${shop}|(heavy|stiff|lots of|a lot of|tough|too much) competition|crowded market`);
+  const some = new RegExp(`\\b(several|[5-7]|five|six|seven)\\s+(other\\s+)?(\\w+\\s+)?${shop}|moderate competition`);
+  const few = new RegExp(`\\b(one|two|three|a few|couple of|[1-4])\\s+(other\\s+)?(\\w+\\s+)?${shop}\\s+(nearby|near|around|on|in)|some competition|little competition`);
+  if (none.test(t)) return { level: "none", phrase: quote(none) };
+  if (many.test(t)) return { level: "many", phrase: quote(many) };
+  if (some.test(t)) return { level: "some", phrase: quote(some) };
+  if (few.test(t)) return { level: "few", phrase: quote(few) };
+  return undefined;
 }
 
 /** Values stated in the free text for cells that were left blank in the sheet. */

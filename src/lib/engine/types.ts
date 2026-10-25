@@ -69,7 +69,17 @@ export interface TextTags {
   locationCues: string[]; // "near bus stand", "main road"
   contradictions: string[]; // notes vs structured fields
   fills?: Fills; // values stated in the free text for cells left blank
+  competitors?: { level: CompLevel; phrase: string }; // only when the text talks about competitors
   source: "ai" | "rules";
+}
+
+/** How crowded the pin is with the brand's own category, relative to what is normal for it. */
+export type CompLevel = "none" | "few" | "some" | "many";
+
+export interface CompEst {
+  level: CompLevel;
+  note: string;
+  source: "ai" | "prior";
 }
 
 export interface Fills {
@@ -131,7 +141,7 @@ export interface Rubric {
   createdAt: string;
   blend: { partner: number; location: number }; // sums to 100
   partner: { floor: number; size: number; ownership: number; financial: number; operational: number; speed: number; local: number };
-  location: { strategic: number; demographic: number; jtbd: number; supply: number; economics: number; competition: number };
+  location: { strategic: number; demographic: number; jtbd: number; supply: number; economics: number; competition: number; competitors: number };
   approveMin: Record<Tier, number>; // tier minimums for Approve
   conditionalMin: number;
   rejectBelow: number;
@@ -230,6 +240,7 @@ export interface EngineInput {
   localities: Record<string, Locality>;
   overrides: Record<string, Override>;
   edited?: Record<string, string[]>; // application id -> fields the team corrected after upload
+  competitors?: Record<string, CompEst>; // pin -> competitor density estimate for the brand's category
 }
 
 export interface BatchSummary {

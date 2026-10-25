@@ -148,7 +148,7 @@ def pipeline():
         ("04", "Build the territory map", "Pin → territory. Usable slots = min(open slots, pins without a store). Overlaps and wrong tiers flagged."),
         ("05", "Phase 1 territory gate", "If any application is inside a territory → strict: outside pins are held. If none are → fallback: all continue with a penalty flag."),
         ("06", "Knockouts", "Checked in order before scoring (see right)."),
-        ("07", "Score 13 metrics, 0–10", "Partner fit 50% + location fit 50% → 100 points, shown as five dimensions."),
+        ("07", "Score 14 metrics, 0–10", "Partner fit 50% + location fit 50% → 100 points, shown as five dimensions."),
         ("08", "Screen before allocation", "Missing data, legal risk, form-vs-notes conflict, duplicate, low score, too many gaps."),
         ("09", "One store per pin", "Best score keeps each pin. A strong runner-up is re-scored on a free pin in the same territory."),
         ("10", "Fill territory slots", "Rank by score; tie-break capital → site → sooner launch → lower ID."),
@@ -316,7 +316,7 @@ def worked():
 <table class="t"><thead><tr><th>Dimension</th><th>Before</th><th>After</th></tr></thead><tbody>{dimrow(b4['dims'], af['dims'])}</tbody></table>
 <p class="m">Remaining condition: {esc(af['conditions'][0] if af['conditions'] else '—')}</p></div>
 </div>
-<h4>All 13 metrics on upload</h4>
+<h4>All 14 metrics on upload</h4>
 <table class="t small"><thead><tr><th>Metric</th><th>Weight</th><th>Score /10</th><th>Evidence the engine recorded</th></tr></thead><tbody>{fac}</tbody></table>
 <h4>Knock-on example: “APP-019 has withdrawn”</h4>
 <table class="t small"><thead><tr><th>ID</th><th>Before</th><th>After</th><th>Why</th></tr></thead><tbody>{wd}</tbody></table>
@@ -426,7 +426,7 @@ table.lv td.v {{ text-align: right; font-family: 'Geist Mono', monospace; font-s
 
 TOC = [
     ("01", "What Outpost does"), ("02", "System flow — the swimlane"), ("03", "Inputs: the two trigger choices and three sheets"),
-    ("04", "Reading messy data"), ("05", "Decision pipeline — step by step"), ("06", "Scoring rubric: 5 dimensions, 13 metrics"),
+    ("04", "Reading messy data"), ("05", "Decision pipeline — step by step"), ("06", "Scoring rubric: 5 dimensions, 14 metrics"),
     ("07", "From score to decision"), ("08", "Allocation: one store per pin"), ("09", "Outputs: plan, payback, explanation"),
     ("10", "Feedback and improve loops"), ("11", "Where AI is used — and where it isn't"), ("12", "Worked example and sample batch"),
     ("13", "Assumptions and limits"),
@@ -458,6 +458,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><title>Outpost — D
     <tr><td><b>One store per pin, always</b></td><td>Existing stores included. Usable slots are capped by pins that are still free.</td></tr>
     <tr><td><b>Best partner wins the slot</b></td><td>A strong runner-up for a pin is re-scored on a free pin in the same territory instead of being thrown away.</td></tr>
     <tr><td><b>The team decides</b></td><td>Overrides need a reason; rubric changes are previewed and approved as new versions; every change is logged and undoable.</td></tr>
+    <tr><td><b>Rubric v2</b></td><td>Adds “Competitors nearby” to location fit. Location keeps its 45 points: strategic fit 25 → 20 and supply-chain reach 15 → 10 (of the location weights) make room for competitors at 10.</td></tr>
     <tr><td><b>Show raw values, not just scores</b></td><td>“₹18L vs Tier 3 minimum ₹20L (0.90×) · batch median ₹30L” — every number is traceable.</td></tr>
   </tbody></table>
   <h3>Decision vocabulary</h3>
@@ -530,8 +531,8 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><title>Outpost — D
 
 <section class="sec">
   <div class="sec-h"><span>[06] Scoring rubric</span><span>Rubric v{R['version']} · 100 points</span></div>
-  <h2>Five dimensions, thirteen metrics.</h2>
-  <p class="lead">Each metric is scored 0–10. Partner fit (7 metrics) and location fit (6 metrics) are each weighted to 100 and blended {R['blend']['partner']}/{R['blend']['location']}. The result is shown as five dimensions so the reason is easy to read.</p>
+  <h2>Five dimensions, fourteen metrics.</h2>
+  <p class="lead">Each metric is scored 0–10. Partner fit (7 metrics) and location fit (7 metrics) are each weighted to 100 and blended {R['blend']['partner']}/{R['blend']['location']}. The result is shown as five dimensions so the reason is easy to read.</p>
   <table class="t"><thead><tr><th>Dimension</th><th>Question it answers</th><th>Metrics</th><th>Points</th></tr></thead><tbody>{dims_rows}</tbody></table>
   <div class="callout"><b>Formula.</b> Partner score = Σ (metric score / 10 × partner weight). Location score = Σ (metric score / 10 × location weight). Final = {R['blend']['partner']}% × partner + {R['blend']['location']}% × location. If the brand runs the store (FOCO), half the operating-experience weight moves to financial readiness.</div>
   {metric_tables()}
@@ -590,7 +591,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><title>Outpost — D
   <h2>What every partner gets.</h2>
   <table class="t"><tbody>
     <tr><td style="width:28%"><b>Decision &amp; headline</b></td><td>One status and a one-sentence reason (slot, rival, bar, cap).</td></tr>
-    <tr><td><b>Five dimension scores</b></td><td>Plus all 13 metric scores with the evidence the engine recorded.</td></tr>
+    <tr><td><b>Five dimension scores</b></td><td>Plus all 14 metric scores with the evidence the engine recorded.</td></tr>
     <tr><td><b>Conditions</b></td><td>What must close before signing, with due dates.</td></tr>
     <tr><td><b>Path to yes</b></td><td>Single changes (and the combination) simulated against the whole batch — rivals included — showing the decision each would produce.</td></tr>
     <tr><td><b>Open pins nearby</b></td><td>For anyone without a slot: free pins in the same city that still have capacity.</td></tr>
@@ -648,7 +649,7 @@ HTML = f"""<!doctype html><html><head><meta charset="utf-8"><title>Outpost — D
     <li><b>Score cut-offs</b> (tier bars {R['approveMin']['Tier 1']}/{R['approveMin']['Tier 2']}/{R['approveMin']['Tier 3']}, review band {R['rejectBelow']}–{R['conditionalMin']}) are starting values to be tuned against which partners actually open and pay back.</li>
     <li><b>No store performance data.</b> Sheet 3 has no sales or payback, so existing stores are assumed healthy; payback is a category benchmark.</li>
     <li><b>No geography below pin code.</b> About 60 well-known pins are on a built-in locality map; others use an AI estimate or the city baseline. Distances are approximate.</li>
-    <li><b>Competition</b> means cannibalisation of the brand's own stores and white space; no competitor data is uploaded.</li>
+    <li><b>Competitors nearby</b> (new in rubric v2) has no uploaded competitor list: it uses the applicant's own notes when they mention competitors, otherwise an AI estimate for the pin code (labelled), otherwise the locality type. Public OpenStreetMap servers were tested but were too unreliable to depend on.</li>
     <li><b>Preferred language</b> counts in “local nuance” (10% of partner fit), following the team's applicant rubric.</li>
     <li><b>Financial strength beyond stated investment</b> and traits like coachability are checked in the interview, not scored.</li>
   </ul>

@@ -1,5 +1,5 @@
 import type {
-  AltPin, Application, Condition, Decision, EngineInput, EngineOutput, Factor, Issue, Locality, PathToYes,
+  AltPin, Application, CompLevel, Condition, Decision, EngineInput, EngineOutput, Factor, Issue, Locality, PathToYes,
   Result, Store, Territory, TerritoryResult, TextTags, Tier,
 } from "./types";
 import { ARCHETYPE_LABEL, CITY_BY_NAME, GAZETTEER, ROAD_FACTOR, cityForPin, findCity, km, type CityInfo } from "./reference";
@@ -373,6 +373,27 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
         const sc = d < rubric.saturationKm ? 2 : d < 4 ? 5 : d < 7 ? 8 : 9;
         L("competition", sc, `Nearest own store ${ns.id} is ${ns.approx ? "~" : ""}${d} km away${d < rubric.saturationKm ? " — catchments overlap (cannibalisation)" : d < 4 ? " — partial catchment overlap" : " — proven city, separate catchment"}.`);
       } else L("competition", ter?.priority === "High" ? 9.5 : 7.5, `White space — no own store in ${city?.name ?? "this city"} yet${ter?.priority === "High" ? ", and it is a High-priority territory" : ""}.`);
+    }
+    // Competitors nearby: other brands in the same category around the pin.
+    // A few competitors prove demand; none is untested white space; many is saturation.
+    if (rubric.location.competitors > 0) {
+      const said = tags.competitors;
+      const est = app.pin ? input.competitors?.[app.pin] : undefined;
+      const arch = locality?.archetype ?? "unknown";
+      const prior: Record<string, CompLevel | null> = { cbd: "many", "high-street": "some", transit: "some", "it-corridor": "few", "premium-residential": "few", residential: "few", "peri-urban": "none", industrial: "none", unknown: null };
+      const level: CompLevel | null = said?.level ?? est?.level ?? (app.floor === "Mall unit" ? "some" : prior[arch]);
+      const high = ter?.priority === "High";
+      const score = level === null ? 6.5 : { none: high ? 8 : 6.5, few: 9.5, some: 7, many: 3.5 }[level];
+      const what = { none: "no competitors nearby — untested demand", few: "a few competitors — demand is proven and there is room", some: "several competitors — needs a clear edge", many: "crowded with competitors — saturated" };
+      const cat = brand.industry.toLowerCase();
+      const ev = said
+        ? `Applicant says “${said.phrase}” — ${level ? what[level] : ""}.`
+        : est
+          ? `AI estimate for ${cat} around ${locality?.name ?? app.pin}: ${level ? what[level] : ""}${est.note ? ` (${est.note})` : ""}.`
+          : level
+            ? `Estimated from the locality type (${ARCHETYPE_LABEL[arch].toLowerCase()}${app.floor === "Mall unit" ? ", mall" : ""}): ${what[level]}.`
+            : "No competitor information for this pin — neutral score.";
+      L("competitors", score, ev, !said);
     }
 
     const sum = (g: "partner" | "location") => factors.filter((f) => f.group === g).reduce((a, f) => a + (f.score / 10) * f.weight, 0);

@@ -1,8 +1,8 @@
 {
  "rubric": {
-  "version": 1,
-  "note": "Initial rubric from the expansion team",
-  "createdAt": "2026-10-25T00:00:00.000Z",
+  "version": 2,
+  "note": "Adds “Competitors nearby” to location fit — location stays 45 points",
+  "createdAt": "2026-10-25T12:00:00.000Z",
   "blend": {
    "partner": 50,
    "location": 50
@@ -17,12 +17,13 @@
    "local": 10
   },
   "location": {
-   "strategic": 25,
+   "strategic": 20,
    "demographic": 20,
    "jtbd": 20,
-   "supply": 15,
+   "supply": 10,
    "economics": 10,
-   "competition": 10
+   "competition": 10,
+   "competitors": 10
   },
   "approveMin": {
    "Tier 1": 70,
@@ -356,8 +357,8 @@
    "key": "strategic",
    "label": "Strategic fit & slots",
    "group": "location",
-   "weight": 25,
-   "points": 12.5,
+   "weight": 20,
+   "points": 10,
    "what": "How much the brand wants this territory now, and how many slots are left.",
    "levels": [
     [
@@ -438,8 +439,8 @@
    "key": "supply",
    "label": "Supply-chain reach",
    "group": "location",
-   "weight": 15,
-   "points": 7.5,
+   "weight": 10,
+   "points": 5,
    "what": "How easily stock reaches the store from the existing network.",
    "levels": [
     [
@@ -462,11 +463,11 @@
   },
   {
    "key": "competition",
-   "label": "Cannibalisation vs. white space",
+   "label": "Own-store overlap",
    "group": "location",
    "weight": 10,
    "points": 5,
-   "what": "Would it eat into an existing store, or open fresh ground?",
+   "what": "Would it eat into one of the brand's own existing stores?",
    "levels": [
     [
      "Own store under 2 km away",
@@ -487,6 +488,36 @@
     [
      "New city, High priority / other",
      "9.5 / 7.5"
+    ]
+   ]
+  },
+  {
+   "key": "competitors",
+   "label": "Competitors nearby",
+   "group": "location",
+   "weight": 10,
+   "points": 5,
+   "what": "Other eyewear & optical businesses around the pin. A few prove there is demand; none is untested; too many split the customers. Read from the applicant's notes first, then an AI estimate for the pin, then the locality type.",
+   "levels": [
+    [
+     "A few (1–3) — demand proven, room to grow",
+     "9.5"
+    ],
+    [
+     "None — white space (High-priority territory / other)",
+     "8 / 6.5"
+    ],
+    [
+     "Several (4–7) — needs a clear edge",
+     "7"
+    ],
+    [
+     "Crowded (8+) — saturated",
+     "3.5"
+    ],
+    [
+     "No information",
+     "6.5"
     ]
    ]
   },
@@ -766,8 +797,8 @@
      "key": "strategic",
      "label": "Strategic fit & slots",
      "group": "location",
-     "weight": 25,
-     "points": 12.5,
+     "weight": 20,
+     "points": 10,
      "what": "How much the brand wants this territory now, and how many slots are left.",
      "levels": [
       [
@@ -848,8 +879,8 @@
      "key": "supply",
      "label": "Supply-chain reach",
      "group": "location",
-     "weight": 15,
-     "points": 7.5,
+     "weight": 10,
+     "points": 5,
      "what": "How easily stock reaches the store from the existing network.",
      "levels": [
       [
@@ -872,11 +903,11 @@
     },
     {
      "key": "competition",
-     "label": "Cannibalisation vs. white space",
+     "label": "Own-store overlap",
      "group": "location",
      "weight": 10,
      "points": 5,
-     "what": "Would it eat into an existing store, or open fresh ground?",
+     "what": "Would it eat into one of the brand's own existing stores?",
      "levels": [
       [
        "Own store under 2 km away",
@@ -897,6 +928,36 @@
       [
        "New city, High priority / other",
        "9.5 / 7.5"
+      ]
+     ]
+    },
+    {
+     "key": "competitors",
+     "label": "Competitors nearby",
+     "group": "location",
+     "weight": 10,
+     "points": 5,
+     "what": "Other eyewear & optical businesses around the pin. A few prove there is demand; none is untested; too many split the customers. Read from the applicant's notes first, then an AI estimate for the pin, then the locality type.",
+     "levels": [
+      [
+       "A few (1–3) — demand proven, room to grow",
+       "9.5"
+      ],
+      [
+       "None — white space (High-priority territory / other)",
+       "8 / 6.5"
+      ],
+      [
+       "Several (4–7) — needs a clear edge",
+       "7"
+      ],
+      [
+       "Crowded (8+) — saturated",
+       "3.5"
+      ],
+      [
+       "No information",
+       "6.5"
       ]
      ]
     }
@@ -1429,196 +1490,196 @@
    "APP-001",
    "Ravi Kumar",
    "Conditional",
-   78.4,
-   "Holds slot 2 of 2 in TER-03 (score 78.4) if 1 condition is met. It lost pin 570001 to APP-026, but still outranks the rest of TER-03, so it is offered free pin 570008 instead."
+   76.9,
+   "Holds slot 2 of 2 in TER-03 (score 76.9) if 1 condition is met. It lost pin 570001 to APP-026, but still outranks the rest of TER-03, so it is offered free pin 570008 instead."
   ],
   [
    "APP-002",
    "Priya Shetty",
    "Approve",
-   92.3,
-   "Wins slot 1 of 2 in TER-01; score 92.3 clears the Tier 1 bar of 70."
+   92.1,
+   "Wins slot 1 of 2 in TER-01; score 92.1 clears the Tier 1 bar of 70."
   ],
   [
    "APP-003",
    "Arjun Rao",
    "Conditional",
-   84.7,
-   "Holds slot 2 of 2 in TER-01 (score 84.7) if 1 condition is met. It lost pin 560102 to APP-002, but still outranks the rest of TER-01, so it is offered free pin 560068 instead."
+   84.4,
+   "Holds slot 2 of 2 in TER-01 (score 84.4) if 1 condition is met. It lost pin 560102 to APP-002, but still outranks the rest of TER-01, so it is offered free pin 560068 instead."
   ],
   [
    "APP-004",
    "Meena Gowda",
    "Reject",
-   83.4,
+   81.9,
    "Pin 570009 already has store ST-06 (opened 2021). The brand never opens two stores in one pin code."
   ],
   [
    "APP-005",
    "Imran Khan",
    "Hold",
-   68.1,
-   "Waitlisted #1 for TER-03: its 2 slots went to higher scores (APP-026 92.3, APP-001 78.4); this application scored 68.1."
+   66.6,
+   "Waitlisted #1 for TER-03: its 2 slots went to higher scores (APP-026 89.3, APP-001 76.9); this application scored 66.6."
   ],
   [
    "APP-006",
    "Suresh Patil",
    "Hold",
-   51.8,
-   "Borderline: score 51.8 is in the review band (45–55); the Tier bar is 66."
+   52.1,
+   "Borderline: score 52.1 is in the review band (45–55); the Tier bar is 66."
   ],
   [
    "APP-007",
    "Lakshmi N",
    "Conditional",
-   86.7,
-   "Holds slot 2 of 2 in TER-06 (score 86.7) if 1 condition is met. It lost pin 572101 to APP-019, but still outranks the rest of TER-06, so it is offered free pin 572102 instead."
+   85.5,
+   "Holds slot 2 of 2 in TER-06 (score 85.5) if 1 condition is met. It lost pin 572101 to APP-019, but still outranks the rest of TER-06, so it is offered free pin 572102 instead."
   ],
   [
    "APP-008",
    "Deepak Hegde",
    "Reject",
-   60.6,
+   60.1,
    "Severely undercapitalised: ₹12L is 48% of the ₹25L needed (below 50%)."
   ],
   [
    "APP-009",
    "Farhan Ali",
    "Hold",
-   76.9,
-   "Waitlisted #1 for TER-02: its 1 slot went to higher scores (APP-010 85.9); this application scored 76.9."
+   76.4,
+   "Waitlisted #1 for TER-02: its 1 slot went to higher scores (APP-010 86.7); this application scored 76.4."
   ],
   [
    "APP-010",
    "Kavya Reddy",
    "Approve",
-   85.9,
-   "Wins slot 1 of 1 in TER-02; score 85.9 clears the Tier 1 bar of 70."
+   86.7,
+   "Wins slot 1 of 1 in TER-02; score 86.7 clears the Tier 1 bar of 70."
   ],
   [
    "APP-011",
    "Ganesh Bhat",
    "Hold",
-   74.7,
+   75.7,
    "Needs information: City says Mysuru, but pin 560038 is in Bengaluru. Which one is the store meant for? If the pin is right, it is already served by ST-03."
   ],
   [
    "APP-012",
    "Anil Kulkarni",
    "Conditional",
-   67.1,
-   "Holds slot 2 of 3 in TER-07 (score 67.1) if 3 conditions are met. Score 67.1 would be Approve, but no space is identified yet, so Conditional — slot reserved for 60 days."
+   66.2,
+   "Holds slot 2 of 3 in TER-07 (score 66.2) if 3 conditions are met. Score 66.2 would be Approve, but no space is identified yet, so Conditional — slot reserved for 60 days."
   ],
   [
    "APP-013",
    "Rohit Sharma",
    "Reject",
-   72.8,
+   72.3,
    "Pin 590001 already has store ST-10 (opened 2024). The brand never opens two stores in one pin code."
   ],
   [
    "APP-014",
    "Sneha Pai",
    "Conditional",
-   75.4,
-   "Holds slot 1 of 1 in TER-04 (score 75.4) if 1 condition is met."
+   74.9,
+   "Holds slot 1 of 1 in TER-04 (score 74.9) if 1 condition is met."
   ],
   [
    "APP-015",
    "Vikram Joshi",
    "Reject",
-   74.9,
+   77.2,
    "Pin 560066 already has store ST-04 (opened 2022). The brand never opens two stores in one pin code."
   ],
   [
    "APP-016",
    "Nandini Murthy",
    "Approve",
-   90.3,
-   "Wins slot 1 of 3 in TER-07; score 90.3 clears the Tier 3 bar of 62."
+   87.9,
+   "Wins slot 1 of 3 in TER-07; score 87.9 clears the Tier 3 bar of 62."
   ],
   [
    "ROW-018",
    "Harish M",
    "Hold",
-   72.1,
-   "Waitlisted #1 for TER-06: its 2 slots went to higher scores (APP-019 94.6, APP-007 86.7); this application scored 72.1."
+   70.8,
+   "Waitlisted #1 for TER-06: its 2 slots went to higher scores (APP-019 91.8, APP-007 85.5); this application scored 70.8."
   ],
   [
    "APP-018",
    "Pooja Iyer",
    "Hold",
-   77.1,
-   "Waitlisted #1 for TER-01: its 2 slots went to higher scores (APP-002 92.3, APP-003 84.7); this application scored 77.1."
+   76.8,
+   "Waitlisted #1 for TER-01: its 2 slots went to higher scores (APP-002 92.1, APP-003 84.4); this application scored 76.8."
   ],
   [
    "APP-019",
    "Mahesh Gowda",
    "Approve",
-   94.6,
-   "Wins slot 1 of 2 in TER-06; score 94.6 clears the Tier 3 bar of 62."
+   91.8,
+   "Wins slot 1 of 2 in TER-06; score 91.8 clears the Tier 3 bar of 62."
   ],
   [
    "APP-020",
    "Arif Pasha",
    "Approve",
-   71.9,
-   "Wins slot 1 of 1 in TER-05; score 71.9 clears the Tier 2 bar of 66."
+   72.2,
+   "Wins slot 1 of 1 in TER-05; score 72.2 clears the Tier 2 bar of 66."
   ],
   [
    "APP-021",
    "Sunita Desai",
    "Hold",
-   72.9,
+   73.9,
    "Outside the expansion area: pin 590006 is in no territory, while 24 other applications are (Phase 1 check). Kept on the waitlist — it goes forward if the team adds this pin."
   ],
   [
    "APP-022",
    "Ramesh Naik",
    "Hold",
-   66.9,
+   67.9,
    "Outside the expansion area: pin 590010 is in no territory, while 24 other applications are (Phase 1 check). Kept on the waitlist — it goes forward if the team adds this pin."
   ],
   [
    "APP-023",
    "Divya Kamath",
    "Hold",
-   62.3,
-   "Waitlisted #1 for TER-04: its 1 slot went to higher scores (APP-014 75.4); this application scored 62.3."
+   61.8,
+   "Waitlisted #1 for TER-04: its 1 slot went to higher scores (APP-014 74.9); this application scored 61.8."
   ],
   [
    "APP-024",
    "Prakash B",
    "Hold",
-   76.5,
+   75,
    "Needs information: Investment amount missing."
   ],
   [
    "APP-025",
    "Shalini Rao",
    "Hold",
-   69.3,
+   68.4,
    "Verify before deciding: possible legal or ownership dispute."
   ],
   [
    "APP-026",
    "Kiran Kumar",
    "Approve",
-   92.3,
-   "Wins slot 1 of 2 in TER-03; score 92.3 clears the Tier 2 bar of 66."
+   89.3,
+   "Wins slot 1 of 2 in TER-03; score 89.3 clears the Tier 2 bar of 66."
   ],
   [
    "APP-027",
    "Priya Shetty",
    "Hold",
-   91.4,
+   91.2,
    "Duplicate of APP-002 (same applicant and pin) — merge the two before deciding."
   ],
   [
    "APP-028",
    "Uday Shetty",
    "Reject",
-   74.9,
+   73.7,
    "Pin 580020 already has store ST-09 (opened 2023). The brand never opens two stores in one pin code."
   ]
  ],
@@ -1626,10 +1687,10 @@
   "id": "APP-012",
   "name": "Anil Kulkarni",
   "decision": "Conditional",
-  "score": 67.1,
+  "score": 66.2,
   "P": 61.3,
-  "L": 72.9,
-  "headline": "Holds slot 2 of 3 in TER-07 (score 67.1) if 3 conditions are met. Score 67.1 would be Approve, but no space is identified yet, so Conditional — slot reserved for 60 days.",
+  "L": 71.1,
+  "headline": "Holds slot 2 of 3 in TER-07 (score 66.2) if 3 conditions are met. Score 66.2 would be Approve, but no space is identified yet, so Conditional — slot reserved for 60 days.",
   "conditions": [
    "Secure a ground-floor 250–600 sq ft space in pin 577002 within 60 days (slot reserved meanwhile); the brand's site team audits it.",
    "Close a funding gap of ₹2L (sanction letter or co-investor) before signing.",
@@ -1650,7 +1711,7 @@
    ],
    [
     "Location fit",
-    75
+    73
    ],
    [
     "Launch realism",
@@ -1702,7 +1763,7 @@
    ],
    [
     "Strategic fit & slots",
-    25,
+    20,
     10,
     "TER-07 (Davanagere) is High priority with 3 open slots."
    ],
@@ -1720,7 +1781,7 @@
    ],
    [
     "Supply-chain reach",
-    15,
+    10,
     6.5,
     "No store in Davanagere yet; nearest is Hubballi-Dharwad (ST-09) ~171 km by road — needs a modified delivery schedule."
    ],
@@ -1731,17 +1792,23 @@
     "Capital covers 90% of setup; rent not yet known."
    ],
    [
-    "Cannibalisation vs. white space",
+    "Own-store overlap",
     10,
     9.5,
     "White space — no own store in Davanagere yet, and it is a High-priority territory."
+   ],
+   [
+    "Competitors nearby",
+    10,
+    6.5,
+    "No competitor information for this pin — neutral score."
    ]
   ],
   "paths": [
    {
     "label": "All of: secures a ground-floor 425 sq ft space (rented); raises capital to ₹26L",
     "becomes": "Approve",
-    "score": 84.4
+    "score": 83.5
    }
   ],
   "ter": "TER-07",
@@ -1751,10 +1818,10 @@
   "id": "APP-012",
   "name": "Anil Kulkarni",
   "decision": "Conditional",
-  "score": 76.4,
+  "score": 75.5,
   "P": 79.8,
-  "L": 72.9,
-  "headline": "Holds slot 2 of 3 in TER-07 (score 76.4) if 1 condition is met.",
+  "L": 71.1,
+  "headline": "Holds slot 2 of 3 in TER-07 (score 75.5) if 1 condition is met.",
   "conditions": [
    "Close a funding gap of ₹2L (sanction letter or co-investor) before signing."
   ],
@@ -1773,7 +1840,7 @@
    ],
    [
     "Location fit",
-    75
+    73
    ],
    [
     "Launch realism",
@@ -1825,7 +1892,7 @@
    ],
    [
     "Strategic fit & slots",
-    25,
+    20,
     10,
     "TER-07 (Davanagere) is High priority with 3 open slots."
    ],
@@ -1843,7 +1910,7 @@
    ],
    [
     "Supply-chain reach",
-    15,
+    10,
     6.5,
     "No store in Davanagere yet; nearest is Hubballi-Dharwad (ST-09) ~171 km by road — needs a modified delivery schedule."
    ],
@@ -1854,17 +1921,23 @@
     "Capital covers 90% of setup."
    ],
    [
-    "Cannibalisation vs. white space",
+    "Own-store overlap",
     10,
     9.5,
     "White space — no own store in Davanagere yet, and it is a High-priority territory."
+   ],
+   [
+    "Competitors nearby",
+    10,
+    6.5,
+    "No competitor information for this pin — neutral score."
    ]
   ],
   "paths": [
    {
     "label": "Raises capital to ₹26L",
     "becomes": "Approve",
-    "score": 84.4
+    "score": 83.5
    }
   ],
   "ter": "TER-07",
@@ -1874,10 +1947,10 @@
   "id": "APP-001",
   "name": "Ravi Kumar",
   "decision": "Conditional",
-  "score": 78.4,
+  "score": 76.9,
   "P": 84.3,
-  "L": 72.5,
-  "headline": "Holds slot 2 of 2 in TER-03 (score 78.4) if 1 condition is met. It lost pin 570001 to APP-026, but still outranks the rest of TER-03, so it is offered free pin 570008 instead.",
+  "L": 69.5,
+  "headline": "Holds slot 2 of 2 in TER-03 (score 76.9) if 1 condition is met. It lost pin 570001 to APP-026, but still outranks the rest of TER-03, so it is offered free pin 570008 instead.",
   "conditions": [
    "Relocate from pin 570001 (taken by a higher score) to free pin 570008 — Mysuru · 570008; site team to confirm a space there. Note: APP-024 also asked for 570008 but does not qualify yet — if that changes, the decision re-runs."
   ],
@@ -1896,7 +1969,7 @@
    ],
    [
     "Location fit",
-    73
+    69
    ],
    [
     "Launch realism",
@@ -1948,7 +2021,7 @@
    ],
    [
     "Strategic fit & slots",
-    25,
+    20,
     10,
     "TER-03 (Mysuru) is High priority with 2 open slots."
    ],
@@ -1966,7 +2039,7 @@
    ],
    [
     "Supply-chain reach",
-    15,
+    10,
     9,
     "Mysuru already has 2 stores — existing replenishment route."
    ],
@@ -1977,10 +2050,16 @@
     "Capital covers 100% of setup."
    ],
    [
-    "Cannibalisation vs. white space",
+    "Own-store overlap",
     10,
     2,
     "Nearest own store ST-06 is ~1.9 km away — catchments overlap (cannibalisation)."
+   ],
+   [
+    "Competitors nearby",
+    10,
+    6.5,
+    "No competitor information for this pin — neutral score."
    ]
   ],
   "paths": [],
@@ -1992,13 +2071,13 @@
    "APP-007",
    "Conditional",
    "Approve",
-   "Wins slot 1 of 2 in TER-06; score 91.2 clears the Tier 3 bar of 62."
+   "Wins slot 1 of 2 in TER-06; score 88.5 clears the Tier 3 bar of 62."
   ],
   [
    "ROW-018",
    "Hold",
    "Conditional",
-   "Holds slot 2 of 2 in TER-06 (score 72.1) if 1 condition is met."
+   "Holds slot 2 of 2 in TER-06 (score 70.8) if 1 condition is met."
   ],
   [
    "APP-019",

@@ -1,5 +1,5 @@
 "use client";
-import type { Application, BrandProfile, EngineInput, EngineOutput, Locality, Result, TextTags } from "./engine/types";
+import type { Application, BrandProfile, CompEst, EngineInput, EngineOutput, Locality, Result, TextTags } from "./engine/types";
 import { GAZETTEER, cityForPin } from "./engine/reference";
 import type { Edit } from "./engine/patch";
 import { buildPlan } from "./engine/plan";
@@ -29,6 +29,12 @@ export async function aiLocalities(pins: string[], known: Record<string, Localit
   const need = [...new Set(pins)].filter((p) => p && !GAZETTEER[p] && !known[p] && cityForPin(p)).map((p) => ({ pin: p, city: cityForPin(p)!.name }));
   if (!need.length) return { localities: {} as Record<string, Locality> };
   return post<{ localities: Record<string, Locality> }>("/api/ai/localities", { pins: need });
+}
+
+export async function aiCompetitors(pins: string[], brand: BrandProfile, localities: Record<string, Locality>) {
+  const list = [...new Set(pins)].filter((p) => p && cityForPin(p)).map((p) => ({ pin: p, city: cityForPin(p)!.name, locality: (GAZETTEER[p] ?? localities[p])?.name }));
+  if (!list.length) return { estimates: {} as Record<string, CompEst> };
+  return post<{ estimates: Record<string, CompEst> }>("/api/ai/competitors", { category: brand.industry, pins: list }, 30000);
 }
 
 export function compactRecord(r: Result) {

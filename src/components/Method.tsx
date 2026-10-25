@@ -75,7 +75,7 @@ export default function Method() {
         <div className="card">
           <p className="eyebrow">Location fit · {rubric.blend.location}%</p>
           <p className="small" style={{ marginTop: 8 }}>
-            Strategic fit {rubric.location.strategic} · demographics {rubric.location.demographic} · purchase triggers {rubric.location.jtbd} · supply chain {rubric.location.supply} · real-estate economics {rubric.location.economics} · cannibalisation vs white space {rubric.location.competition}
+            Strategic fit {rubric.location.strategic} · demographics {rubric.location.demographic} · purchase triggers {rubric.location.jtbd} · supply chain {rubric.location.supply} · real-estate economics {rubric.location.economics} · own-store overlap {rubric.location.competition} · competitors nearby {rubric.location.competitors}
           </p>
           <p className="xs muted" style={{ marginTop: 8 }}>
             Approve needs Tier 1 ≥ {rubric.approveMin["Tier 1"]}, Tier 2 ≥ {rubric.approveMin["Tier 2"]}, Tier 3 ≥ {rubric.approveMin["Tier 3"]}. Slot-eligible from {rubric.conditionalMin}; reject below {rubric.rejectBelow}.
@@ -100,7 +100,7 @@ export default function Method() {
           <li className="small">No store performance data: Sheet 3 has no sales or payback, so existing stores are assumed healthy.</li>
           <li className="small" style={{ marginTop: 8 }}>Locality types come from a built-in map of ~60 well-known pins; others use an AI estimate (labelled) or the city baseline. Distances are approximate.</li>
           <li className="small" style={{ marginTop: 8 }}>Setup cost, revenue and margin are category benchmarks per tier, so payback is indicative. The team can tune them on the first screen.</li>
-          <li className="small" style={{ marginTop: 8 }}>No competitor data is uploaded, so &ldquo;competition&rdquo; measures cannibalisation of the brand&apos;s own stores and white space.</li>
+          <li className="small" style={{ marginTop: 8 }}>No competitor list is uploaded, so &ldquo;competitors nearby&rdquo; comes from the applicant&apos;s notes when they mention it, otherwise an AI estimate for the pin (labelled), otherwise the locality type.</li>
           <li className="small" style={{ marginTop: 8 }}>Built with Claude Code; it is not used while the app runs. Runtime AI is Gemini Flash.</li>
         </ul>
       </div>

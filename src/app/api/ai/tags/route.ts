@@ -19,6 +19,7 @@ You never score or decide anything. Be literal: only tag what the text says. Ret
 - positives: short phrases, e.g. "Owns the property", "Strong local roots", "Existing customer base", "Has run more than one outlet", "Relevant management background"
 - locationCues: places mentioned near the site, lowercase, e.g. "bus stand", "main road", "hospital", "college", "market", "mall"
 - contradictions: only where the text and a structured field (floor, space, size, experience, investment) CANNOT both be true, as one plain sentence each. "5 years in eyewear" with 12 years of total retail experience is NOT a contradiction; "first floor" in notes with floor = Ground IS one.
+- competitors: ONLY if the text talks about competing shops of the brand's category near the site: {"level": "none" | "few" | "some" | "many", "phrase": "the exact words, max 60 chars"}. Omit it otherwise.
 - fills: ONLY for structured fields that are null / blank / "Not known" in the input, the value the free text clearly states: {"investment": ₹ lakh number, "size": sq ft number, "floor": "Ground"|"Upper"|"Mall unit", "space": "Owned"|"Rented"|"Not yet identified", "launch": months number, "experience": years number}. Omit anything not clearly stated. Use {} when nothing applies.
 Red-flag meanings: "Space not ready yet" = a space they already have is under construction or renovation (NOT someone still looking for a space — that is already in the form). "Owner may not be hands-on" = they say someone else will run it or they keep another full-time job. "Funding depends on a loan" = they say they need a loan or financing.
 Use the exact red-flag wording above where it fits. Empty arrays when nothing applies.`;
@@ -28,6 +29,14 @@ const URGENCY = ["high", "normal", "low"] as const;
 const INTENT = ["strong", "generic", "weak"] as const;
 const strs = (v: unknown) => (Array.isArray(v) ? v.filter((x) => typeof x === "string" && x.trim()).map((x: string) => x.trim().slice(0, 140)).slice(0, 5) : []);
 const pick = <T extends string>(v: unknown, opts: readonly T[], d: T): T => (opts.includes(v as T) ? (v as T) : d);
+
+function cleanComp(v: unknown): TextTags["competitors"] {
+  if (!v || typeof v !== "object") return undefined;
+  const o = v as Record<string, unknown>;
+  const level = ["none", "few", "some", "many"].includes(String(o.level)) ? (o.level as "none" | "few" | "some" | "many") : null;
+  const phrase = typeof o.phrase === "string" ? o.phrase.trim().slice(0, 60) : "";
+  return level && phrase ? { level, phrase } : undefined;
+}
 
 function cleanFills(v: unknown): Fills {
   const f: Fills = {};
@@ -57,6 +66,7 @@ function clean(raw: Record<string, unknown> | undefined): TextTags | null {
     locationCues: strs(raw.locationCues).map((s) => s.toLowerCase()),
     contradictions: strs(raw.contradictions),
     fills: cleanFills(raw.fills),
+    competitors: cleanComp(raw.competitors),
     source: "ai",
   };
 }

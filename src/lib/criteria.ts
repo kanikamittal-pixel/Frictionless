@@ -87,8 +87,13 @@ export function metrics(r: Rubric, b: BrandProfile): Metric[] {
     },
     {
       ...Lc("competition"),
-      what: "Would it eat into an existing store, or open fresh ground?",
+      what: "Would it eat into one of the brand's own existing stores?",
       levels: [L(`Own store under ${r.saturationKm} km away`, "2"), L("2–4 km", "5"), L("4–7 km", "8"), L("Farther, same city", "9"), L("New city, High priority / other", "9.5 / 7.5")],
+    },
+    {
+      ...Lc("competitors"),
+      what: `Other ${b.industry.toLowerCase()} businesses around the pin. A few prove there is demand; none is untested; too many split the customers. Read from the applicant's notes first, then an AI estimate for the pin, then the locality type.`,
+      levels: [L("A few (1–3) — demand proven, room to grow", "9.5"), L("None — white space (High-priority territory / other)", "8 / 6.5"), L("Several (4–7) — needs a clear edge", "7"), L("Crowded (8+) — saturated", "3.5"), L("No information", "6.5")],
     },
     {
       ...P("speed"),
@@ -163,6 +168,7 @@ export function simpleRows(r: Rubric, b: BrandProfile): SimpleRow[] {
     row("jtbd", "Location", "Reasons for people to walk in", "Near a bus stand, market, mall, hospital or college", "Quiet street with nothing nearby"),
     row("supply", "Location", "How easily stock can reach it", "City already has a store", "More than 250 km from the nearest store"),
     row("competition", "Location", "Would it steal sales from our own store", "No own store within 7 km, or a new city", "Own store within 2 km"),
+    row("competitors", "Location", "Other brands' shops nearby", "A few (1–3) — shows people buy here", "Crowded with 8+ — customers already split"),
     row("speed", "Launch", "How soon they can open", "Within 3 months, and realistic", "More than 10 months away"),
   ];
 }

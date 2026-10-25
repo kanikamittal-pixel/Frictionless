@@ -3,7 +3,7 @@ import { useStore, uid } from "./store";
 import { runEngine } from "./engine/run";
 import { applyEdits, describeEdit, validateEdit, type ChangeEntry, type DiffRow, type Edit } from "./engine/patch";
 import type { Application, BrandProfile, EngineInput, EngineOutput, Override, TextTags } from "./engine/types";
-import { editedMap, preview } from "./useEngine";
+import { competitorsFor, editedMap, preview } from "./useEngine";
 import { ruleTags } from "./engine/lexicon";
 import { aiTags } from "./ai";
 import { normId } from "./engine/normalize";
@@ -14,7 +14,7 @@ export function currentInput(): EngineInput | null {
   const s = useStore.getState();
   if (!s.batch) return null;
   const { applications, territories } = applyEdits(s.batch.applications, s.batch.territories, s.changes.flatMap((c) => c.edits));
-  return { applications, territories, stores: s.batch.stores, brand: s.brand, rubric: s.rubric, tags: s.tags, localities: s.localities, overrides: s.overrides, edited: editedMap(s.changes) };
+  return { applications, territories, stores: s.batch.stores, brand: s.brand, rubric: s.rubric, tags: s.tags, localities: s.localities, overrides: s.overrides, edited: editedMap(s.changes), competitors: competitorsFor(s.competition, s.brand.industryKey) };
 }
 
 export function currentOutput(): { input: EngineInput; out: EngineOutput } | null {

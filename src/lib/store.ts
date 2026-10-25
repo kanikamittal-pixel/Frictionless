@@ -1,9 +1,9 @@
 "use client";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { Application, BrandProfile, Decision, Issue, Locality, Override, Rubric, Store, Territory, TextTags } from "./engine/types";
+import type { Application, BrandProfile, CompEst, Decision, Issue, Locality, Override, Rubric, Store, Territory, TextTags } from "./engine/types";
 import type { ChangeEntry, DiffRow, Edit } from "./engine/patch";
-import { DEFAULT_RUBRIC } from "./engine/rubric";
+import { DEFAULT_RUBRIC, RUBRIC_V1, upgradeRubric } from "./engine/rubric";
 import { buildProfile } from "./engine/brand";
 import { normId } from "./engine/normalize";
 
@@ -71,6 +71,7 @@ interface State {
   changes: ChangeEntry[];
   overrides: Record<string, Override>;
   tags: Record<string, TextTags>;
+  competition: Record<string, CompEst>; // `${industryKey}|${pin}` -> estimate
   localities: Record<string, Locality>;
   ai: { tags: "idle" | "running" | "done" | "failed"; places: "idle" | "running" | "done" | "failed"; model?: string };
   chat: ChatMsg[];
@@ -103,12 +104,13 @@ export const useStore = create<State>()(
       setup: { industryKey: "eyewear", modelKey: "fofo", customIndustry: "", customModel: "" },
       brand: buildProfile("eyewear", "fofo"),
       rubric: DEFAULT_RUBRIC,
-      rubricHistory: [DEFAULT_RUBRIC],
+      rubricHistory: [RUBRIC_V1, DEFAULT_RUBRIC],
       rubricDraft: null,
       batch: null,
       changes: [],
       overrides: {},
       tags: {},
+      competition: {},
       localities: {},
       ai: { tags: "idle", places: "idle" },
       chat: [],
@@ -140,9 +142,16 @@ export const useStore = create<State>()(
     {
       name: "outpost-workspace-v1",
       storage: createJSONStorage(() => localStorage),
+      // Saved workspaces from before "Competitors nearby" get the v2 location weights.
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<State>;
+        const rubric = p.rubric ? upgradeRubric(p.rubric) : current.rubric;
+        const history = p.rubricHistory?.length ? p.rubricHistory : current.rubricHistory;
+        return { ...current, ...p, rubric, rubricHistory: history.some((h) => h.version === rubric.version) ? history : [...history, rubric] };
+      },
       partialize: (s) => ({
         setup: s.setup, brand: s.brand, rubric: s.rubric, rubricHistory: s.rubricHistory, batch: s.batch, changes: s.changes,
-        overrides: s.overrides, tags: s.tags, localities: s.localities, chat: s.chat, briefs: s.briefs, outcomes: s.outcomes, chatOpen: s.chatOpen, criteriaOpen: s.criteriaOpen,
+        overrides: s.overrides, tags: s.tags, competition: s.competition, localities: s.localities, chat: s.chat, briefs: s.briefs, outcomes: s.outcomes, chatOpen: s.chatOpen, criteriaOpen: s.criteriaOpen,
       }),
     },
   ),

@@ -7,7 +7,7 @@ export const DIMS = [
   { key: "money", label: "Money", factors: ["financial", "economics"] },
   { key: "site", label: "Site readiness", factors: ["floor", "size", "ownership"] },
   { key: "operator", label: "Operator", factors: ["operational", "local"] },
-  { key: "location", label: "Location fit", factors: ["strategic", "demographic", "jtbd", "supply", "competition"] },
+  { key: "location", label: "Location fit", factors: ["strategic", "demographic", "jtbd", "supply", "competition", "competitors"] },
   { key: "launch", label: "Launch realism", factors: ["speed"] },
 ] as const;
 

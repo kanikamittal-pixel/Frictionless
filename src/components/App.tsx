@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useStore, uid, type Tab } from "@/lib/store";
 import { useEngine } from "@/lib/useEngine";
 import { parseWorkbook } from "@/lib/engine/parse";
-import { aiLocalities, aiTags, saveBatch } from "@/lib/ai";
+import { upgradeRubric } from "@/lib/engine/rubric";
+import { aiCompetitors, aiLocalities, aiTags, saveBatch } from "@/lib/ai";
 import { Icon, LogoMark, Ruler, ThemeToggle } from "./ui";
 import Setup from "./Setup";
 import Overview from "./Overview";
@@ -52,7 +53,7 @@ export default function App() {
       .then((j) => {
         const latest = j.versions?.[0];
         const st = useStore.getState();
-        if (latest && latest.version > st.rubric.version) st.set({ rubric: latest, rubricHistory: [...j.versions].reverse() });
+        if (latest && latest.version > st.rubric.version) st.set({ rubric: upgradeRubric(latest), rubricHistory: [...j.versions].reverse() });
       })
       .catch(() => {});
     return unsub;
@@ -63,6 +64,21 @@ export default function App() {
     const t = setTimeout(() => setToast(null), 3200);
     return () => clearTimeout(t);
   }, [toast]);
+
+  // Brand changed after upload: rate competitors for the new category.
+  useEffect(() => {
+    if (!s.batch || proc || (status && !status.ai)) return;
+    const key = s.brand.industryKey;
+    const pins = [...new Set(s.batch.applications.map((a) => a.pin))].filter(Boolean);
+    if (!pins.length || pins.some((p) => s.competition[`${key}|${p}`])) return;
+    aiCompetitors(pins, s.brand, s.localities)
+      .then((r) => {
+        const add = Object.fromEntries(Object.entries(r.estimates).map(([p, v]) => [`${key}|${p}`, v]));
+        if (Object.keys(add).length) useStore.getState().set({ competition: { ...useStore.getState().competition, ...add } });
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s.batch?.id, s.brand.industryKey, proc]);
 
   // Mirror every batch (and every change) to the database for Insights.
   useEffect(() => {
@@ -89,6 +105,7 @@ export default function App() {
       { label: "Building the map", detail: "Pin code → territory, open slots, pins already served by a store", state: "wait" },
       { label: "Reading the free text", detail: "AI tags business relevance, urgency, red flags and contradictions", state: "wait" },
       { label: "Placing each pin code", detail: "Locality type for pins not on the built-in map", state: "wait" },
+      { label: "Checking competitors nearby", detail: "How crowded each pin is with the brand's category", state: "wait" },
       { label: "Gate, score and allocate", detail: "Phase 1 territory check, 100-point rubric, best score wins each slot", state: "wait" },
     ];
     const upd = (i: number, state: StepState, detail?: string) => {
@@ -119,9 +136,11 @@ export default function App() {
     if (status && !status.ai) {
       upd(3, "skip", "AI unavailable — used the rule-based reader");
       upd(4, "skip", "Using the built-in pin map and city baselines");
+      upd(5, "skip", "Estimated from each locality type");
     } else {
       upd(3, "run");
       upd(4, "run");
+      upd(5, "run");
       const tagJob = aiTags(wb.applications, st.brand)
         .then((r) => {
           useStore.getState().set({ tags: r.tags, ai: { ...useStore.getState().ai, tags: "done", model: r.model } });
@@ -135,11 +154,20 @@ export default function App() {
           upd(4, "done", n ? `${n} pin code${n === 1 ? "" : "s"} placed (AI estimate, labelled as such)` : "All pins are on the built-in map");
         })
         .catch(() => upd(4, "skip", "Using the built-in pin map and city baselines"));
-      await Promise.all([tagJob, placeJob]);
+      const compJob = aiCompetitors(wb.applications.map((a) => a.pin), st.brand, st.localities)
+        .then((r) => {
+          const key = st.brand.industryKey;
+          const add = Object.fromEntries(Object.entries(r.estimates).map(([p, v]) => [`${key}|${p}`, v]));
+          const n = Object.keys(add).length;
+          useStore.getState().set({ competition: { ...useStore.getState().competition, ...add } });
+          upd(5, n ? "done" : "skip", n ? `${n} pin code${n === 1 ? "" : "s"} rated for ${st.brand.industry.toLowerCase()} (AI estimate; applicants' own notes take priority)` : "Estimated from each locality type");
+        })
+        .catch(() => upd(5, "skip", "Estimated from each locality type"));
+      await Promise.all([tagJob, placeJob, compJob]);
     }
-    upd(5, "run");
+    upd(6, "run");
     await new Promise((r) => setTimeout(r, 350));
-    upd(5, "done");
+    upd(6, "done");
     await new Promise((r) => setTimeout(r, 450));
     setProc(null);
     useStore.getState().set({ tab: "overview", selected: null });

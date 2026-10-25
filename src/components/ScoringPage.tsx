@@ -84,7 +84,7 @@ export default function ScoringPage({ onBack }: { onBack: () => void }) {
       {/* Step 2 */}
       <h3 className="section-h">
         <span>Step 2 · A score out of 100</span>
-        <span className="meta">13 things, 5 areas</span>
+        <span className="meta">{rows.length} things, 5 areas</span>
       </h3>
       <div className="sc-areas">
         {AREAS.map((a) => (

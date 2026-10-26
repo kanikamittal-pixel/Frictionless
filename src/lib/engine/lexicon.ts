@@ -84,6 +84,16 @@ export function ruleTags(app: Application, brand: BrandProfile, updated: Set<str
   if (textYears !== null && app.experience !== null && textYears - app.experience >= 3)
     c("experience", true, `${SOFT} Text mentions ${textYears}${/\d+\s*\+/.test(yrs![0]) ? "+" : ""} years in business, but Retail experience says ${app.experience}`);
   else c("experience", (app.experience ?? 0) === 0 && !!direct && has(biz, /runs|running|own|manag/), "Runs a related business today, but experience is 0 years");
+  // "I can only arrange 10 lakh" against a bigger number in the form: the money may not be there.
+  const lessMoney = notes.match(/\bcan only (?:arrange|afford|invest|put in|manage)\s+(?:₹|rs\.?\s*)?(\d+(?:\.\d+)?)\s*(?:lakhs?|lac|l\b)|\b(?:only|just)\s+(?:₹|rs\.?\s*)?(\d+(?:\.\d+)?)\s*(?:lakhs?|lac|l\b)\s*(?:available|in hand|ready|right now|for now)/);
+  const lessN = lessMoney ? +(lessMoney[1] ?? lessMoney[2]) : null;
+  c("investment", lessN !== null && app.investment !== null && lessN < app.investment * 0.8, `Notes say only ₹${lessN}L is available, but Investment says ₹${app.investment}L`);
+  c("space", (app.space === "Owned" || app.space === "Rented") && /\b(haven'?t|have not|not yet|yet to) (found|got|finali[sz]ed) (a |the |any )?(shop|space|place)|\bstill (searching|looking)\b/.test(notes), "Notes say they haven't found a shop yet, but Space says " + app.space);
+  // The notes correct the form downwards: "Only 2 years experience, not 12 as written".
+  const fixYears = notes.match(/\b(?:only|actually|just|really)\s+(\d+(?:\.\d+)?)\s*(?:years?|yrs?)\b[^.;]{0,40}(?:experience|running|run|ran|managing|business|shop|retail)|\b(?:experience|running|ran|managed|business)\b[^.;]{0,20}\b(?:only|actually|just)\s+(\d+(?:\.\d+)?)\s*(?:years?|yrs?)\b/);
+  const said = fixYears ? +(fixYears[1] ?? fixYears[2]) : null;
+  if (said !== null && app.experience !== null && said !== app.experience && !(textYears !== null && textYears - app.experience >= 3))
+    c("experience", true, `${SOFT} Notes say ${said} years of experience, but Retail experience says ${app.experience}`);
   c("size", app.space === "Not yet identified" && (app.size ?? 0) > 0, "Space size is filled in although no space is identified");
   const wantLang = notes.match(/\b(kannada|hindi|english)\b.{0,15}\btraining|training\b.{0,15}\b(kannada|hindi|english)\b|not comfortable in (kannada|hindi|english)/);
   if (wantLang && app.language) {

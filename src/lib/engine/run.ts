@@ -78,7 +78,8 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
   const terIssues = new Map<string, Issue[]>(territories.map((t) => [t.id, [...t.parseIssues]]));
   const terTier = new Map<string, Tier | null>();
   const pinOwner = new Map<string, Territory>();
-  const ordered = [...territories].sort((a, b) => PRI_RANK[b.priority ?? "Medium"] - PRI_RANK[a.priority ?? "Medium"] || (b.slots ?? 0) - (a.slots ?? 0));
+  // Ties fall back to the territory ID so a shared pin's owner never depends on row order.
+  const ordered = [...territories].sort((a, b) => PRI_RANK[b.priority ?? "Medium"] - PRI_RANK[a.priority ?? "Medium"] || (b.slots ?? 0) - (a.slots ?? 0) || a.id.localeCompare(b.id, undefined, { numeric: true }));
   for (const t of ordered) {
     const iss = terIssues.get(t.id)!;
     const official = findCity(t.city) ?? (t.pins[0] ? cityForPin(t.pins[0]) : null);
@@ -117,7 +118,13 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
 
   // ---------- Applications: identity and data checks ----------
   // Facts read from the free text: the AI's reading where it gave one, the rules otherwise.
-  const signalsFor = (a: Application): Signals => mergeSignals(ruleSignals(a), input.tags[a.id]?.signals);
+  // Cached per application object: ranking compares the same pair many times.
+  const sigCache = new Map<Application, Signals>();
+  const signalsFor = (a: Application): Signals => {
+    let s = sigCache.get(a);
+    if (!s) sigCache.set(a, (s = mergeSignals(ruleSignals(a), input.tags[a.id]?.signals)));
+    return s;
+  };
   const seen = new Map<string, number>();
   const apps = input.applications.map((a) => {
     const n = (seen.get(a.id) ?? 0) + 1;
@@ -129,7 +136,6 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     return b;
   });
   const personKey = (a: Application) => `${a.name.toLowerCase().replace(/\s+/g, " ").trim()}|${a.pin}`;
-  const firstByPerson = new Map<string, string>();
 
   const active = apps.filter((a) => !a.withdrawn);
   const matched = active.filter((a) => a.pin && pinOwner.has(a.pin) && !cityMismatch(a));
@@ -138,13 +144,12 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
 
   const invs = apps.map((a) => a.investment).filter((x): x is number => typeof x === "number" && x > 0).sort((a, b) => a - b);
   const medianInv = invs.length ? (invs.length % 2 ? invs[(invs.length - 1) / 2] : (invs[invs.length / 2 - 1] + invs[invs.length / 2]) / 2) : 0;
-  const dupOf = new Map<string, string>();
-  for (const a of apps) {
-    if (!a.name) continue;
-    const pk = personKey(a);
-    if (firstByPerson.has(pk)) dupOf.set(a.id, firstByPerson.get(pk)!);
-    else firstByPerson.set(pk, a.id);
-  }
+  // Same name and pin = duplicate submissions. Which one goes forward is decided after scoring
+  // (the stronger one), never by which row came first.
+  const byPerson = new Map<string, string[]>();
+  for (const a of apps) if (a.name && !a.withdrawn) byPerson.set(personKey(a), [...(byPerson.get(personKey(a)) ?? []), a.id]);
+  const dupOf = new Map<string, string[]>();
+  for (const ids of byPerson.values()) if (ids.length > 1) for (const id of ids) dupOf.set(id, ids.filter((x) => x !== id));
   // The same person applying for several pins ("R. Naik" / "Ramesh Naik", same funds):
   // their money can only fund one store, so only their best application can take a slot.
   const sameAs = new Map<string, { ids: Set<string>; why: Map<string, string> }>();
@@ -159,7 +164,7 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
   for (let i = 0; i < live.length; i++)
     for (let j = i + 1; j < live.length; j++) {
       const [x, y] = [live[i], live[j]];
-      if (dupOf.get(y.id) === x.id || dupOf.get(x.id) === y.id) continue;
+      if (dupOf.get(x.id)?.includes(y.id)) continue;
       const names = sameName(x.name, y.name);
       const sx = signalsFor(x);
       const sy = signalsFor(y);
@@ -199,7 +204,7 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     if (!app.name) issues.push({ severity: "block", field: "name", code: "missing-name", message: "Applicant name is blank or a placeholder — ask who is applying." });
     if (app.size !== null && app.size > 0 && app.size < 50 && app.space !== "Not yet identified")
       issues.push({ severity: "block", field: "size", code: "implausible-size", message: `Space size of ${app.size} sq ft looks like a typo — confirm the real carpet area.` });
-    if (dupOf.has(app.id)) issues.push({ severity: "warn", code: "dup-person", message: `Same name and pin as ${dupOf.get(app.id)} — likely a duplicate submission.` });
+    if (dupOf.has(app.id)) issues.push({ severity: "warn", code: "dup-person", message: `Same name and pin as ${dupOf.get(app.id)!.join(", ")} — likely a duplicate submission.` });
     const group = sameAs.get(app.id);
     if (group) issues.push({ severity: "warn", code: "same-person", message: `Likely the same applicant as ${[...group.ids].filter((i) => i !== app.id).join(", ")} (${[...group.why].filter(([k]) => k.split("~").includes(app.id)).map(([, v]) => v).join("; ") || "linked through another application"}).` });
     const sig = signalsFor(app);
@@ -248,7 +253,11 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
           conditions.push({ code: "relocate", text: "Move to a ground-floor or mall unit; upper floors don't work for this format.", lever: "ground floor" });
           majors++;
         }
-      } else P("floor", nys ? 5 : 4, nys ? "No space yet — the brand will require a ground-floor site." : "Floor not stated for the identified space.", true);
+      } else {
+        P("floor", nys ? 5 : 4, nys ? "No space yet — the brand will require a ground-floor site." : "Floor not stated for the identified space.", true);
+        // A space is in hand but nobody said which floor: the site audit must confirm it before signing.
+        if (!nys) conditions.push({ code: "confirm-floor", text: `Confirm which floor the ${app.space?.toLowerCase()} space is on${brand.groundCritical ? " — this format needs ground floor or a mall unit" : ""}.`, lever: "ground floor" });
+      }
     }
     // Size
     {
@@ -485,7 +494,6 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
       const sp = app.pin ? storeByPin.get(app.pin) : undefined;
       if (cityMismatch(app) && sp) hold += ` If the pin is right, it is already served by ${sp.id}.`;
     }
-    if (!hard && !hold && dupOf.has(app.id)) hold = `Duplicate of ${dupOf.get(app.id)} (same applicant and pin) — merge the two before deciding.`;
     const severe = tags.redFlags.filter((f) => SEVERE_FLAG.test(f));
     if (!hard && !hold && severe.length) hold = `Verify before deciding: ${severe.join("; ").toLowerCase()}.`;
     if (!hard && !hold && firmConflicts.length) hold = `Needs clarification: ${firmConflicts.join("; ")}${app.notes ? ` (notes: "${quoteAround(app.notes)}")` : ""}.`;
@@ -521,6 +529,13 @@ export function runEngine(input: EngineInput, opts: { paths?: boolean } = {}): E
     const hit = steps.find(([, d]) => d !== 0);
     return hit ? ` Scores are tied; the tie-break went to ${win.app.id} for ${hit[0]}.` : ` Scores are tied on every factor; the lower application ID broke the tie — the team may override.`;
   };
+
+  // Duplicate submissions (same name and pin): the stronger one goes forward, the rest are held.
+  for (const ids of byPerson.values()) {
+    if (ids.length < 2) continue;
+    const live = work.filter((x) => ids.includes(x.app.id) && !x.hard && !x.hold).sort(rankCmp);
+    for (const m of live.slice(1)) m.hold = `Duplicate of ${live[0].app.id} (same applicant and pin) — merge the two before deciding.`;
+  }
 
   // One store per person: of a linked applicant's applications, only the strongest goes forward.
   const seenGroups = new Set<object>();

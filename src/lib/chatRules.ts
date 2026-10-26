@@ -30,6 +30,11 @@ export function rulesChat(message: string, out: EngineOutput, brand?: BrandProfi
   const edits: Edit[] = [];
   const assumptions: string[] = [];
 
+  // An ID that isn't in this batch gets a straight answer, not a list about everyone else.
+  const unknown = ids.filter((id) => /^(APP|TER)-/.test(id) && !out.results.some((r) => r.id === id) && !out.territories.some((t) => t.id === id));
+  if (unknown.length && !apps.length && !out.territories.some((t) => ids.includes(t.id)))
+    return answer(`There's no ${unknown.join(" or ")} in this batch. It has ${out.results.length} applications (${out.results[0]?.id ?? "—"} to ${out.results.at(-1)?.id ?? "—"}) and territories ${out.territories.map((t) => t.id).join(", ") || "none"}.`);
+
   if (/ignore (your|the|all)? ?rules|approve (everyone|everybody|all)|override (the )?rules/.test(low))
     return answer("I can't approve in bulk or set the rules aside: open slots and the one-store-per-pin rule apply to everyone. To change one decision, open that application and use Override with a reason, or tell me the new facts (\"APP-012 found a ground-floor space\") and I'll re-run it.");
 

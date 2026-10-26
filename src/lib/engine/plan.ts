@@ -68,7 +68,7 @@ export function buildPlan(r: Result, brand: BrandProfile, today = new Date()): P
 
   // Approve / Conditional: a real launch plan.
   let d = 0;
-  const conditionDue: Record<string, number> = { "confirm-notes": 7, "find-space": 60, "funding-gap": 30, relocate: 45, "relocate-pin": 30, resize: 45, format: 14, "confirm-size": 7, confirm: 7, manager: 21, timeline: 3, territory: 21, "existing-shop": 21 };
+  const conditionDue: Record<string, number> = { "confirm-notes": 7, "confirm-floor": 7, "find-space": 60, "funding-gap": 30, relocate: 45, "relocate-pin": 30, resize: 45, format: 14, "confirm-size": 7, confirm: 7, manager: 21, timeline: 3, territory: 21, "existing-shop": 21 };
   const gates = r.conditions.filter((c) => c.code !== "below-bar");
   for (const c of gates) add(conditionDue[c.code] ?? 14, { phase: "Before signing", owner: c.code === "territory" ? "Brand" : "Partner", title: c.text, detail: "Must be closed before the agreement is signed.", gate: true });
   const gateEnd = gates.length ? Math.max(...gates.map((c) => conditionDue[c.code] ?? 14)) : 0;
